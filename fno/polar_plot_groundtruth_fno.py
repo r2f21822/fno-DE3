@@ -275,7 +275,7 @@ def main():
         description="Inspeção e Sanity Check do FNO treinado.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    pa.add_argument("h5file",  nargs="?", default="data/snl/snl_dataset.h5")
+    pa.add_argument("h5file",  nargs="?", default="Generate_data/snl_data/snl_dataset.h5")
     pa.add_argument("--idx",   type=int,  default=0,
                     help="Índice da amostra (0 = Benchmark J&P)")
     pa.add_argument("--model", type=str,  default=None,
