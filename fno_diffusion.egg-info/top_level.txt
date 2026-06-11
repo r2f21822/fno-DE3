@@ -1,0 +1,5 @@
+Generate_data
+data
+fno
+fno_diffusion
+venv

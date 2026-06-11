@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: fno-diffusion
+Version: 0.1.0
+Summary: Fourier Neural Operator for 1D diffusion–sorption PDEs
+Author: tclos
+Requires-Dist: torch
+Requires-Dist: neuraloperator
+Requires-Dist: numpy<2
+Requires-Dist: matplotlib
+Requires-Dist: h5py
