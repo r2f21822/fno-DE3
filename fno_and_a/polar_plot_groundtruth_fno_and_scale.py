@@ -162,10 +162,10 @@ def plot_comparison(idx, E, S_gt, S_pred, St_gt, St_pred, f, theta, fp, Hs, gamm
 
 def main():
     pa = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    pa.add_argument("h5file", nargs="?", default="data/snl/snl_dataset.h5")
+    pa.add_argument("h5file", nargs="?", default="Generate_data/snl_data/snl_dataset.h5")
     pa.add_argument("--idx", type=int, default=0)
-    pa.add_argument("--model", default="fno_and_a/results_snl_fno_and_a/model_best.pth")
-    pa.add_argument("--out-dir", default="data/snl")
+    pa.add_argument("--model", default="fno_and_a/results_snl_factorized/model_best.pth")
+    pa.add_argument("--out-dir", default="fno_and_a/results_snl_factorized")
     pa.add_argument("--n-modes", type=int, nargs=2, default=[16, 16])
     pa.add_argument("--hidden-channels", type=int, default=64)
     pa.add_argument("--scale-head-hidden", type=int, default=128)
