@@ -17,7 +17,7 @@ from fno_diffusion.model import make_fno_2d
 
 
 DATA_PATH = "Generate_data/snl_data/snl_dataset.h5"
-RUN_DIR   = "results_snl"
+RUN_DIR   = "fno/results_snl"
 
 CONFIG = {
     "model": {

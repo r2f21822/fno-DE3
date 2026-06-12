@@ -7,7 +7,7 @@ Modos de uso:
        python scripts/inspect_polar_snl.py --idx 0
 
   2. Ground truth + predição do FNO (sanity check):
-       python fno/polar_plot_groundtruth_fno.py --idx 0 --model results_snl/model.pth
+       python fno/polar_plot_groundtruth_fno.py --idx 0 --model fno/model.pth
 
   O modo 2 carrega automaticamente results_snl/norm_params.json para desfazer
   a normalização Y* -> Y antes de plotar.
@@ -282,7 +282,7 @@ def main():
                     help="Caminho para model.pth — ativa modo comparação FNO vs GT")
     pa.add_argument("--n-modes",         type=int, nargs=2, default=[16, 16])
     pa.add_argument("--hidden-channels", type=int, default=64)
-    pa.add_argument("--out-dir", type=str, default="data/snl")
+    pa.add_argument("--out-dir", type=str, default="fno/results_snl/snl")
     args = pa.parse_args()
 
     if not os.path.exists(args.h5file):
