@@ -1,0 +1,10 @@
+model:
+  type: ScaleHead
+  scale_head_hidden: 128
+training:
+  epochs: 100
+  batch_size: 16
+  learning_rate: 0.001
+  scale_loss: log_MSE
+data:
+  path: Generate_data/snl_data/snl_dataset.h5
