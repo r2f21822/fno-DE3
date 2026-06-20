@@ -69,11 +69,15 @@ def relative_l2_physical(pred, target, eps=EPS):
 # ---------------------------------------------------------------------------
 
 def factorize_target(Y, eps=EPS):
+    """
+    Y: (N, 1, Nf, Ntheta)
+    Retorna:
+      Y_tilde: Y / (a + eps)
+      a:       max_abs(Y), shape (N, 1)
+    """
     a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) + eps
-    log_a = torch.log(a)           # ← só isso muda
     Y_tilde = Y / a
-    return Y_tilde, log_a.view(-1, 1)   # ← retorna log_a
-
+    return Y_tilde, a.view(-1, 1)
 # ---------------------------------------------------------------------------
 # Modelo fatorizado
 # ---------------------------------------------------------------------------
