@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
+
 DATA_PATH = "Generate_data/snl_data/snl_dataset.h5"
 RUN_DIR = "scale/results_scale"
 EPS = 1e-8
@@ -138,6 +139,16 @@ def save_curve(train_values, val_values, out_path, ylabel, title):
     plt.savefig(out_path, bbox_inches="tight")
     plt.close()
 
+class LinearRegressor(nn.Module):
+    #y = w1*x1 + w2*x2 + b
+    #sem camadas ou função de ativação
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(2, 1)  # 2 entradas (Hs, fp), 1 saída (log(a))
+
+    def forward(self, x):
+        return self.linear(x)
+
 
 # ---------------------------------------------------------------------------
 # Main
@@ -160,7 +171,8 @@ def main():
 
     config = {
         "model": {
-            "type": "ScaleHead",
+            #LinearRegressor
+            "type": "LinearRegressor",
             "scale_head_hidden": args.scale_head_hidden,
         },
         "training": {
@@ -178,10 +190,10 @@ def main():
 
 
     a = factorize_target(Y)
-    a = torch.log(a + EPS)  # log(a + eps) → evita log(0)
+    a = torch.log(a + EPS)  
 
     X = torch.stack([hs, fp], dim=1)
-    X = torch.log(X + EPS)  # log(X + eps) → evita log(0)
+    X = torch.log(X + EPS)  
 
 
 
@@ -195,8 +207,8 @@ def main():
     val_ds = TensorDataset(X[val_idx], a[val_idx])
     train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True)
     val_loader = DataLoader(val_ds, batch_size=args.batch)
-
-    model = ScaleHead(hidden=args.scale_head_hidden).to(device)
+#LinearRegressor
+    model = LinearRegressor().to(device)
 
     optimizer = Adam(model.parameters(), lr=args.lr)
     scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
@@ -249,6 +261,17 @@ def main():
 
     torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pth"))
 
+    # Depois de treinar o modelo
+
+# Pegar os pesos e bias
+    w = model.linear.weight.detach().cpu().numpy().flatten()
+    b = model.linear.bias.detach().cpu().numpy().item()
+
+    print(f"Coeficientes:")
+    print(f"  w1 = {w[0]:.6f}  (log(Hs))")
+    print(f"  w2 = {w[1]:.6f}  (log(fp))")
+    print(f"  b  = {b:.6f}")
+
     metrics = {
         "final_train_loss": train_losses[-1],
         "final_val_loss": val_losses[-1],
@@ -262,9 +285,6 @@ def main():
         json.dump(metrics, f, indent=2)
 
     save_curve(train_losses, val_losses, os.path.join(args.out_dir, "loss_scale.pdf"), "Log-MSE", "Scale loss: log-MSE em a")
-
-
-
 
     model.eval()
     all_true = []

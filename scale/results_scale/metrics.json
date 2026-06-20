@@ -1,0 +1,28 @@
+{
+  "final_train_loss": 38.27166862487793,
+  "final_val_loss": 37.21029968261719,
+  "best_val_loss": 37.21029968261719,
+  "train_stats": {
+    "a": {
+      "min": -17.582592010498047,
+      "max": 1.7576276063919067,
+      "mean": -9.0562162399292,
+      "std": 4.430245399475098
+    }
+  },
+  "config": {
+    "model": {
+      "type": "LinearRegressor",
+      "scale_head_hidden": 128
+    },
+    "training": {
+      "epochs": 100,
+      "batch_size": 16,
+      "learning_rate": 0.001,
+      "scale_loss": "log_MSE"
+    },
+    "data": {
+      "path": "Generate_data/snl_data/snl_dataset.h5"
+    }
+  }
+}
