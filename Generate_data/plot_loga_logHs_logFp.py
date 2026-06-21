@@ -50,6 +50,7 @@ def main():
     plt.savefig(os.path.join(RUN_DIR, "log_a_vs_log_Hs.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
     print(f"salvo em: {os.path.join(RUN_DIR, 'log_a_vs_log_Hs.pdf')}")
+    print ("inclinação loga/loghs:", loga/logHs)
 
 
 
@@ -63,6 +64,8 @@ def main():
     plt.savefig(os.path.join(RUN_DIR, "log_a_vs_log_fp.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
     print(f"salvo em: {os.path.join(RUN_DIR, 'log_a_vs_log_fp.pdf')}")
+
+    print ("inclinação loga/loghs:", loga/logFp)
 
 
 
