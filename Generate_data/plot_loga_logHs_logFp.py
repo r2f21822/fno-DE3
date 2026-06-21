@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
-from scale.run_training_scale import factorize_target
+#from scale.run_training_scale import factorize_target
 import os
 
 EPS = 1e-8
@@ -11,6 +11,14 @@ EPS = 1e-8
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
 RUN_DIR   = "Generate_data"
 
+def factorize_target(Y, eps=EPS):
+    """
+    Y: (N, 1, Nf, Ntheta)
+    Retorna:
+      a: max_abs(Y), shape (N, 1)
+    """
+    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) + eps
+    return a.view(-1, 1)
 
 def load_snl_dataset(path):
     with h5py.File(path, "r") as hf:
