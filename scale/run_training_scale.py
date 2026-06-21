@@ -335,6 +335,40 @@ def main():
     print(f"\n Treinamento finalizado!")
     print(f" Arquivos salvos em: {args.out_dir}")
     print(f" Best validation loss: {best_val:.4e}")
+
+
+
+        # ============================================================
+    # GRÁFICO EM ESCALA LINEAR (a real vs a predito)
+    # ============================================================
+
+    # Converter de log para linear (10^x)
+    all_true_linear = 10 ** all_true
+    all_pred_linear = 10 ** all_pred
+
+    # Scatter plot em escala linear
+    plt.figure(figsize=(6, 5))
+    plt.scatter(all_true_linear, all_pred_linear, alpha=0.3, s=5)
+
+    # Limites
+    max_lin = max(all_true_linear.max(), all_pred_linear.max())
+    plt.xlim(0, max_lin * 1.1)
+    plt.ylim(0, max_lin * 1.1)
+    plt.axis('equal')
+
+    # Linha ideal y = x
+    plt.plot([0, max_lin * 1.1], [0, max_lin * 1.1], 'r--', lw=2, label='Ideal')
+
+    plt.xlabel('Amplitude Real (a)')
+    plt.ylabel('Amplitude Predita (a)')
+    plt.title(f'Real vs Predito - {len(all_true_linear)} amostras')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_linear.pdf"), dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Scatter linear salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_linear_10.pdf')}")
+
 '''
     print(f"\nArquivos salvos em: {args.out_dir}")
 
