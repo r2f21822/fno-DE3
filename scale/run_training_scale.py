@@ -104,13 +104,17 @@ def load_hs_fp_dataset(path):
     with h5py.File(path, "r") as hf:
         Hs = hf["Hs"][:]   # (N,)
         fp = hf["fp"][:]   # (N,)
+        gamma = hf["gamma"][:]   # (N,)
+        s = hf["s"][:]   # (N,)
         Y = hf["Y"][:]
     
     Hs = torch.tensor(Hs, dtype=torch.float32)
     fp = torch.tensor(fp, dtype=torch.float32)
+    s = torch.tensor(s, dtype=torch.float32)
+    gamma = torch.tensor(gamma, dtype=torch.float32)
     Y = torch.tensor(Y, dtype=torch.float32).permute(0, 3, 1, 2)
     
-    return Hs, fp,Y
+    return Hs, fp,Y, gamma,s
 
 
 def compute_stats(tensor):
@@ -144,7 +148,7 @@ class LinearRegressor(nn.Module):
     #sem camadas ou função de ativação
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(2, 1)  # 2 entradas (Hs, fp), 1 saída (log(a))
+        self.linear = nn.Linear(4, 1)  # 2 entradas (Hs, fp), 1 saída (log(a))
 
     def forward(self, x):
         return self.linear(x)
@@ -186,13 +190,13 @@ def main():
     with open(os.path.join(args.out_dir, "config.yaml"), "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
-    hs, fp, Y = load_hs_fp_dataset(args.h5file)
+    hs, fp, Y,gamma,s = load_hs_fp_dataset(args.h5file)
 
 
     a = factorize_target(Y)
     a = torch.log(a + EPS)  
 
-    X = torch.stack([hs, fp], dim=1)
+    X = torch.stack([hs, fp,gamma,s], dim=1)
     X = torch.log(X + EPS)  
 
 
