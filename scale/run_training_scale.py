@@ -365,7 +365,7 @@ def main():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_linear.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_linear10.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
     print(f"Scatter linear salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_linear_10.pdf')}")
 
