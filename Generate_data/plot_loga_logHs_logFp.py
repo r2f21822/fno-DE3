@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 #from scale.run_training_scale import factorize_target
+from sklearn.linear_model import LinearRegression
 import os
 
 EPS = 1e-8
@@ -40,6 +41,35 @@ def main():
     logHs = torch.log(Hs + EPS)  
     logFp = torch.log(Fp + EPS)  
 
+
+    loga_np = loga.numpy().flatten()
+    logHs_np = logHs.numpy().flatten()
+    logFp_np = logFp.numpy().flatten()
+
+
+    reg_Hs = LinearRegression().fit(logHs_np.reshape(-1, 1), loga_np)
+    slope_Hs = reg_Hs.coef_[0]
+    intercept_Hs = reg_Hs.intercept_
+    r2_Hs = reg_Hs.score(logHs_np.reshape(-1, 1), loga_np)
+
+    print("REGRESSÃO: log(a) vs log(Hs)")
+    print(f"  Inclinação: {slope_Hs:.4f}  (esperado 6)")
+    print(f"  Intercepto: {intercept_Hs:.4f}")
+    print(f"  R²: {r2_Hs:.4f}")
+
+    # Inclinação log(a) vs log(fp)
+    reg_Fp = LinearRegression().fit(logFp_np.reshape(-1, 1), loga_np)
+    slope_Fp = reg_Fp.coef_[0]
+    intercept_Fp = reg_Fp.intercept_
+    r2_Fp = reg_Fp.score(logFp_np.reshape(-1, 1), loga_np)
+
+   
+    print("REGRESSÃO: log(a) vs log(fp)")
+    print(f"  Inclinação: {slope_Fp:.4f}  (esperado 8)")
+    print(f"  Intercepto: {intercept_Fp:.4f}")
+    print(f"  R²: {r2_Fp:.4f}")
+   
+
     plt.figure(figsize=(6, 5))
     plt.scatter(logHs.numpy(), loga.numpy(), alpha=0.3, s=5)
     plt.xlabel('log(Hs)')
@@ -50,7 +80,7 @@ def main():
     plt.savefig(os.path.join(RUN_DIR, "log_a_vs_log_Hs.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
     print(f"salvo em: {os.path.join(RUN_DIR, 'log_a_vs_log_Hs.pdf')}")
-    print ("inclinação loga/loghs:", loga/logHs)
+  
 
 
 
@@ -65,8 +95,7 @@ def main():
     plt.close()
     print(f"salvo em: {os.path.join(RUN_DIR, 'log_a_vs_log_fp.pdf')}")
 
-    print ("inclinação loga/loghs:", loga/logFp)
-
+   
 
 
 
