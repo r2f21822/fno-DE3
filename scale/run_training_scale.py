@@ -376,10 +376,8 @@ def main():
     
     
         # Grafico com exponenciacao base 10
-    all_true_exp1 = 10 ** all_true
-    all_pred_exp1 = 10 ** all_pred
     
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 1) & (all_pred_exp1 >= 1) & (all_pred_exp1 <= 1)
+    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 1)
     all_true_exp = all_true_exp1[mask]
     all_pred_exp = all_pred_exp1[mask]
 
