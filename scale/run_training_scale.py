@@ -330,9 +330,9 @@ def main():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_log.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_gammaessemlog.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Scatter salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_log.pdf')}")
+    print(f"Scatter salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_gammaessemlog.pdf')}")
 
     print(f"\n Treinamento finalizado!")
     print(f" Arquivos salvos em: {args.out_dir}")
