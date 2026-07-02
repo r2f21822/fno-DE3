@@ -342,36 +342,29 @@ def main():
     
     #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         # Grafico com exponenciacao base 10
+    # Grafico com exponenciacao base 10 - zoom em 0-2
     all_true_exp = 10 ** all_true
     all_pred_exp = 10 ** all_pred
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
 
     plt.figure(figsize=(6, 5))
     plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
 
-    #plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    #plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.xlim(0, 2)    # de 0 a 100
-    plt.ylim(0, 2)    # de 0 a 100
+    # Zoom fixo de 0 a 2
+    plt.xlim(0, 2)
+    plt.ylim(0, 2)
     plt.axis('equal')
 
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
+    # Linha ideal no intervalo do zoom
+    plt.plot([0, 2], [0, 2], 'r--', lw=2, label='Ideal')
 
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
+    plt.xlabel('Amplitude Real')
+    plt.ylabel('Amplitude Predita')
+    plt.title(f'Real vs Predito (zoom 0-2) - {len(all_true)} amostras')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scale.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_zoom_0_2.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scale.pdf')}")
-    
-    
     
     
 
