@@ -195,9 +195,11 @@ def main():
 
     a = factorize_target(Y)
     a = torch.log(a + EPS)  
+    
+    
 
-    X = torch.stack([hs, fp,gamma,s], dim=1)
-    X = torch.log(X + EPS)  
+    X = torch.stack([torch.log(hs+EPS), torch.log(fp+EPS),gamma,s], dim=1)
+   # X = torch.log(X + EPS)  
 
 
 
