@@ -407,7 +407,7 @@ def main():
     print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
     
     
-     mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 0.1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 0.1)
+    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 0.1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 0.1)
     all_true_exp = all_true_exp1[mask]
     all_pred_exp = all_pred_exp1[mask]
 
