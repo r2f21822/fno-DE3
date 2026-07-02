@@ -342,8 +342,12 @@ def main():
     
     #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         # Grafico com exponenciacao base 10
-    all_true_exp = 10 ** all_true
-    all_pred_exp = 10 ** all_pred
+    all_true_exp1 = 10 ** all_true
+    all_pred_exp1 = 10 ** all_pred
+    
+    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 2) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 2)
+    all_true_exp = all_true_exp1[mask]
+    all_pred_exp = all_pred_exp1[mask]
 
     min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
     max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
@@ -351,12 +355,15 @@ def main():
     plt.figure(figsize=(6, 5))
     plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
 
-   # plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    #plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.xlim(0, 2)    # de 0 a 100
-    plt.ylim(0, 2)    # de 0 a 100
+    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
+    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
+
     plt.axis('equal')
-    plt.plot([0, 2], [0, 2], 'r--', lw=2, label='Ideal')
+
+    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
+             [min_val_exp * 0.9, max_val_exp * 1.1],
+             'r--', lw=2, label='Ideal')
+
     plt.xlabel('Amplitude Real (10^x)')
     plt.ylabel('Amplitude Predita (10^x)')
     plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
