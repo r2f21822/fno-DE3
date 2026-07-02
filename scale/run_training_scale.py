@@ -303,6 +303,8 @@ def main():
             pred = model(xb)
             all_true.extend(yb.cpu().numpy().flatten())
             all_pred.extend(pred.cpu().numpy().flatten())
+            
+     #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
     all_true = np.array(all_true)
     all_pred = np.array(all_pred)
@@ -338,7 +340,7 @@ def main():
     print(f" Arquivos salvos em: {args.out_dir}")
     print(f" Best validation loss: {best_val:.4e}")
     
-    
+    #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         # Grafico com exponenciacao base 10
     all_true_exp = 10 ** all_true
     all_pred_exp = 10 ** all_pred
@@ -349,8 +351,10 @@ def main():
     plt.figure(figsize=(6, 5))
     plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
 
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
+    #plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
+    #plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
+    plt.xlim(0, 2)    # de 0 a 100
+    plt.ylim(0, 2)    # de 0 a 100
     plt.axis('equal')
 
     plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
