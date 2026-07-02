@@ -29,7 +29,7 @@ def main():
     gamma, s, Y = load_snl_dataset(DATA_PATH)
 
     a = factorize_target(Y)
-    loga = torch.log(a + EPS)  
+    loga = torch.log10(a + EPS)  
 
     loga_np = loga.numpy().flatten()
     gamma_np = gamma.numpy().flatten()
