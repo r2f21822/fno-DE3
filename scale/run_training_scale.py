@@ -356,11 +356,6 @@ def main():
     plt.xlim(0, 2)    # de 0 a 100
     plt.ylim(0, 2)    # de 0 a 100
     plt.axis('equal')
-'''
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-'''
     plt.plot([0, 2], [0, 2], 'r--', lw=2, label='Ideal')
     plt.xlabel('Amplitude Real (10^x)')
     plt.ylabel('Amplitude Predita (10^x)')
