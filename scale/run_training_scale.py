@@ -9,6 +9,12 @@ Treinamento apenas da amplitude (escala a) a partir de E(f, theta).
   - A amplitude é treinada em escala logarítmica
 """
 
+
+
+
+
+#gamma e s sem log(os dois semlog)-------------------------------------------------------------------------------------------------------------------
+
 import argparse
 import json
 import os
@@ -25,7 +31,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 DATA_PATH = "Generate_data/snl_data/snl_dataset.h5"
-RUN_DIR = "scale/results_scale"
+RUN_DIR = "scale/results_scale__gamma_s"
 EPS = 1e-8
 
 
@@ -47,11 +53,6 @@ def scale_mse(pred_a, true_a):
 # ---------------------------------------------------------------------------
 
 def factorize_target(Y, eps=EPS):
-    """
-    Y: (N, 1, Nf, Ntheta)
-    Retorna:
-      a: max_abs(Y), shape (N, 1)
-    """
     a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) + eps
     return a.view(-1, 1)
 
@@ -76,17 +77,6 @@ class ScaleHead(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-# ---------------------------------------------------------------------------
-# I/O
-# ---------------------------------------------------------------------------
-'''
- hf.create_dataset("X", data=X, compression="gzip")
-        hf.create_dataset("Y", data=Y, compression="gzip")
-hf.create_dataset("f", data=f); hf.create_dataset("theta", data=theta)
-        hf.create_dataset("fp", data=fp_a); hf.create_dataset("Hs", data=hs_a)
-        hf.create_dataset("gamma", data=gamma_a); hf.create_dataset("theta0", data=th0_a)
-        hf.create_dataset("s", data=s_a)
-'''
 
 def load_snl_dataset(path):
     with h5py.File(path, "r") as hf:
@@ -304,11 +294,11 @@ def main():
             all_true.extend(yb.cpu().numpy().flatten())
             all_pred.extend(pred.cpu().numpy().flatten())
             
-     #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    
+    #   GRAFICOS
 
     all_true = np.array(all_true)
     all_pred = np.array(all_pred)
-
 
     min_val = min(all_true.min(), all_pred.min())
     max_val = max(all_true.max(), all_pred.max())
@@ -320,7 +310,7 @@ def main():
     plt.ylim(min_val - 0.5, max_val + 0.5)
     plt.axis('equal')
 
-#linha ideal
+    #linha ideal
     plt.plot([min_val - 0.5, max_val + 0.5],
              [min_val - 0.5, max_val + 0.5],
              'r--', lw=2, label='Ideal')
@@ -331,236 +321,55 @@ def main():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_gammaessemlog.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir, "amplitude_emLog_scatter_gamma_s.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Scatter salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_gammaessemlog.pdf')}")
+    print(f"Scatter salvo em: {os.path.join(args.out_dir, 'amplitude_emLog_scatter_gamma_s.pdf')}")
 
-    print(f"\n Treinamento finalizado!")
+    print(f"\n Treinamento finalizado")
     print(f" Arquivos salvos em: {args.out_dir}")
     print(f" Best validation loss: {best_val:.4e}")
     
-    #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
         # Grafico com exponenciacao base 10
     all_true_exp1 = 10 ** all_true
     all_pred_exp1 = 10 ** all_pred
+
+    listaLimitaoes=[1,0.1,0.001,0.0001]
     
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 2) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 2)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
+    for limitacao in listaLimitaoes:
+        mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limitacao) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limitacao)
+        all_true_exp = all_true_exp1[mask]
+        all_pred_exp = all_pred_exp1[mask]
 
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
+        min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
+        max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
 
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
+        plt.figure(figsize=(6, 5))
+        plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
 
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
+        plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
+        plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
 
-    plt.axis('equal')
+        plt.axis('equal')
 
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
+        plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
+                [min_val_exp * 0.9, max_val_exp * 1.1],
+                'r--', lw=2, label='Ideal')
 
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate2.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scale.pdf')}")
-    
-    
-        # Grafico com exponenciacao base 10
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 1)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
+        plt.xlabel('Amplitude Real (10^x)')
+        plt.ylabel('Amplitude Predita (10^x)')
+        plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
 
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
 
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
+        nome_grafico_limitado = "amplitude_original_limitado_ate" + str(limitacao) + ".pdf"
 
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate1.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 0.1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 0.1)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate01.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
-    
-          # Grafico com exponenciacao base 10
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 1)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate1.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 0.01) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 0.01)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate001.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
-          # Grafico com exponenciacao base 10
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 1) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 1)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate1.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
-    mask = (all_true_exp1 >= 0) & (all_true_exp1 <= 0.0001) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= 0.0001)
-    all_true_exp = all_true_exp1[mask]
-    all_pred_exp = all_pred_exp1[mask]
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-             [min_val_exp * 0.9, max_val_exp * 1.1],
-             'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir, "amplitude_scatter_original_scaleLimitadoate00001.pdf"), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, 'amplitude_scatter_original_scaleLimitadoate1.pdf')}")
-    
-    
+        plt.savefig(os.path.join(args.out_dir, nome_grafico_limitado), dpi=150, bbox_inches='tight')
+        plt.close()
+        print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, nome_grafico_limitado)}")
+        
     
 
 if __name__ == "__main__":

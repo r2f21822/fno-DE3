@@ -5,7 +5,7 @@ from fno.fno_run_training import load_snl_dataset
 EPS_NORM = 1e-8
 
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
-RUN_DIR   = "fno/results_snl"
+RUN_DIR   = "fno_and_a/results_snl_factorized"
 
 def plot_amplitude_histogram_from_h5(h5_path=DATA_PATH,out_dir=RUN_DIR,partes=50):
     """
