@@ -374,7 +374,7 @@ def main():
         print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, nome_grafico_limitado)}")
 
 
-    listaLimitaoesPorAmostra=[3000,2500,1000,300,50]
+    listaLimitaoesPorAmostra=[1000,500,300,50]
     
     for min_amostras in listaLimitaoesPorAmostra:
         
