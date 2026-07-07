@@ -379,12 +379,12 @@ def main():
     for min_amostras in listaLimitaoesPorAmostra:
         
         valores_ordenados = np.sort(all_true_exp1)
-    
 
-        if len(valores_ordenados) > min_amostras:
-            limite_amplitude = valores_ordenados[min_amostras - 1]  
-        else:
-            limite_amplitude = valores_ordenados[-1]  
+        if len(valores_ordenados) < min_amostras:
+            print(f"Aviso: apenas {len(valores_ordenados)} amostras disponíveis, menos que {min_amostras}")
+            continue
+    
+        limite_amplitude = valores_ordenados[min_amostras - 1]
 
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limite_amplitude) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limite_amplitude)
         all_true_exp = all_true_exp1[mask]
