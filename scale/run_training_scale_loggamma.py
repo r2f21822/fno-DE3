@@ -374,15 +374,11 @@ def main():
         print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, nome_grafico_limitado)}")
 
 
-    listaLimitaoesPorAmostra=[3000,2500,1000]
+    listaLimitaoesPorAmostra=[3000,2500,1000,300,50]
     
     for min_amostras in listaLimitaoesPorAmostra:
         
         valores_ordenados = np.sort(all_true_exp1)
-
-        if len(valores_ordenados) < min_amostras:
-            print(f"Aviso: apenas {len(valores_ordenados)} amostras disponíveis, menos que {min_amostras}")
-            continue
     
         limite_amplitude = valores_ordenados[min_amostras - 1]
         print(limite_amplitude)
