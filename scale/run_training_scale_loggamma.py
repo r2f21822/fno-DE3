@@ -385,6 +385,7 @@ def main():
             continue
     
         limite_amplitude = valores_ordenados[min_amostras - 1]
+        print(limite_amplitude)
 
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limite_amplitude) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limite_amplitude)
         all_true_exp = all_true_exp1[mask]
