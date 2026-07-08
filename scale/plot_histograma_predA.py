@@ -5,9 +5,11 @@ import os
 def plot_histograma_preditas(results_dir):
     
     all_pred = np.load(os.path.join(results_dir, "all_pred.npy"))
+    all_true = np.load(os.path.join(results_dir, "all_true.npy"))
     
   
     all_pred_exp = 10 ** all_pred
+    all_true_exp = 10 ** all_true
     
 
     plt.figure(figsize=(10, 6))
@@ -24,6 +26,19 @@ def plot_histograma_preditas(results_dir):
     plt.close()
     
     print(f"Histograma salvo em: {save_path}")
+
+    plt.figure(figsize=(10, 6))
+    plt.hist(all_true_exp, bins=100, alpha=0.7, color='blue', edgecolor='black')
+    
+    plt.xlabel('Amplitude Real')
+    plt.ylabel('Frequência')
+    plt.title(f'Histograma das Amplitudes Reais\n{len(all_true_exp)} amostras')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    save_path = os.path.join(results_dir, "histograma_amplitudes_preditas.pdf")
+    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.close()
 
     
     return all_pred_exp

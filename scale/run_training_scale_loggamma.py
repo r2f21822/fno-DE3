@@ -294,6 +294,7 @@ def main():
     all_pred = np.array(all_pred)
 
     np.save(os.path.join(args.out_dir, "all_pred.npy"), all_pred)
+    np.save(os.path.join(args.out_dir, "all_true.npy"), all_true)
 
 
     print(f"Previsões salvas em: {args.out_dir}")
