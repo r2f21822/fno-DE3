@@ -293,6 +293,10 @@ def main():
     all_true = np.array(all_true)
     all_pred = np.array(all_pred)
 
+    np.save(os.path.join(args.out_dir, "all_pred.npy"), all_pred)
+
+
+    print(f"Previsões salvas em: {args.out_dir}")
 
     min_val = min(all_true.min(), all_pred.min())
     max_val = max(all_true.max(), all_pred.max())
