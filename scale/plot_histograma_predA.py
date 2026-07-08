@@ -36,7 +36,7 @@ def plot_histograma_preditas(results_dir):
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
-    save_path = os.path.join(results_dir, "histograma_amplitudes_preditas.pdf")
+    save_path = os.path.join(results_dir, "histograma_amplitudes_real.pdf")
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
     plt.close()
 
