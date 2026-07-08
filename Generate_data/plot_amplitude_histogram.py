@@ -8,9 +8,7 @@ DATA_PATH = "Generate_data/snl/snl_dataset.h5"
 RUN_DIR   = "fno_and_a/results_snl_factorized"
 
 def plot_amplitude_histogram_from_h5(h5_path=DATA_PATH,out_dir=RUN_DIR,partes=50):
-    """
-
-    """
+   
 
     X, Y = load_snl_dataset(h5_path)
 
@@ -30,11 +28,24 @@ def plot_amplitude_histogram_from_h5(h5_path=DATA_PATH,out_dir=RUN_DIR,partes=50
     plt.grid(True, alpha=0.3)
     #plt.show()
 
-    out_path = os.path.join(out_dir, "amplitude_histogram.png")
+    out_path = os.path.join(out_dir, "log_amplitude_histogram.png")
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close()  # Fecha a figura para liberar memória
-    
-    
+
+
+    # Plotar histograma
+    plt.figure(figsize=(8, 5))
+    plt.hist(np.log10(amplitudes + 1e-10), bins=200, edgecolor='black', alpha=0.7)
+   # plt.yscale('log')
+    plt.xlabel("Amplitude Amplitude (max |S_nl|)")
+    plt.ylabel("Contagem")
+    plt.title(f"Distribuição das log_Amplitudes - {h5_path}")
+    plt.grid(True, alpha=0.3)
+    #plt.show()
+
+    out_path = os.path.join(out_dir, "amplitude_histogram.png")
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close() 
     
     return log_amplitudes
 
