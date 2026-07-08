@@ -11,7 +11,7 @@ def plot_histograma_preditas(results_dir):
     
 
     plt.figure(figsize=(10, 6))
-    plt.hist(all_pred_exp, bins=50, alpha=0.7, color='blue', edgecolor='black')
+    plt.hist(all_pred_exp, bins=100, alpha=0.7, color='blue', edgecolor='black')
     
     plt.xlabel('Amplitude Predita')
     plt.ylabel('Frequência')
