@@ -6,6 +6,8 @@ def plot_histograma_preditas(results_dir):
     
     all_pred = np.load(os.path.join(results_dir, "all_pred.npy"))
     all_true = np.load(os.path.join(results_dir, "all_true.npy"))
+    if not os.path.exists(all_true):
+        print(f"AVISO: Arquivo não encontrado: {all_true}")
     
   
     all_pred_exp = 10 ** all_pred
