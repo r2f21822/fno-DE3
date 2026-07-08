@@ -13,20 +13,9 @@ def plot_histograma_preditas(results_dir):
     all_true_exp = 10 ** all_true
     
 
-    plt.figure(figsize=(10, 6))
-    plt.hist(all_pred_exp, bins=100, alpha=0.7, color='blue', edgecolor='black')
-    
-    plt.xlabel('Amplitude Predita')
-    plt.ylabel('Frequência')
-    plt.title(f'Histograma das Amplitudes Preditas\n{len(all_pred_exp)} amostras')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    
-    save_path = os.path.join(results_dir, "histograma_amplitudes_preditas.pdf")
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    
-    print(f"Histograma salvo em: {save_path}")
+
+
+
 
     plt.figure(figsize=(10, 6))
     plt.hist(all_true_exp, bins=100, alpha=0.7, color='blue', edgecolor='black')
@@ -47,3 +36,20 @@ def plot_histograma_preditas(results_dir):
 if __name__ == "__main__":
     RESULTS_DIR = "scale/results_scale_loggamma_s"
     plot_histograma_preditas(RESULTS_DIR)
+
+    '''
+    plt.figure(figsize=(10, 6))
+    plt.hist(all_pred_exp, bins=100, alpha=0.7, color='blue', edgecolor='black')
+    
+    plt.xlabel('Amplitude Predita')
+    plt.ylabel('Frequência')
+    plt.title(f'Histograma das Amplitudes Preditas\n{len(all_pred_exp)} amostras')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    save_path = os.path.join(results_dir, "histograma_amplitudes_preditas.pdf")
+    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    
+    print(f"Histograma salvo em: {save_path}")
+'''
