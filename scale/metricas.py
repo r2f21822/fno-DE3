@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import argparse
+
+RUN_DIR="scale/results_scale_loggamma_s"
 
 def metricas(results_dir):
     
@@ -85,8 +88,9 @@ def metricas(results_dir):
 
 
 
-   
-
 if __name__ == "__main__":
-    RESULTS_DIR = "scale/results_scale_loggamma_s"
-    metricas(RESULTS_DIR)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dir", type=str, help="Diretório com os resultados",default=RUN_DIR)
+    args = parser.parse_args()
+    
+    metricas(args.dir)
