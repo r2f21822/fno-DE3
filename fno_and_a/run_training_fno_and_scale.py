@@ -22,6 +22,9 @@ RUN_DIR = "fno_and_a/results_fno_and_a"
 # Caminho do modelo de amplitude treinado
 AMPLITUDE_MODEL_PATH = "scale/results_scale_loggamma_s/model_best.pth"  # ou o caminho do seu melhor modelo
 
+
+# scripts/run_training_fno_and_scale.py
+
 CONFIG = {
     "model": {
         "type": "FNO_2D_with_amplitude",
@@ -32,7 +35,7 @@ CONFIG = {
         "epochs": 100,
         "batch_size": 16,
         "learning_rate": 1e-3,
-        "freeze_amplitude": True,  # Congela o modelo de amplitude
+        "freeze_amplitude": True,
     },
     "data": {
         "path": DATA_PATH,
@@ -107,7 +110,7 @@ class FNOWithAmplitude(nn.Module):
         
         # Prever a amplitude
         a_pred = self.amplitude_model(x_amplitude)
-        a_pred = torch.exp(a_pred)  # Converter de log para escala original (se o modelo treinou em log)
+        a_pred = 10 ** a_pred  # Converter de log10 para escala original
         
         # Reconstruir
         y_pred = y_tilde * a_pred.view(-1, 1, 1, 1)
@@ -126,6 +129,12 @@ def normalize_per_sample(Y, eps=EPS_NORM):
 
 def relative_l2_loss(pred, target, eps=EPS_NORM):
     """Relative L2 padrão"""
+    diff = (pred - target).view(pred.size(0), -1)
+    tgt = target.view(target.size(0), -1)
+    return (diff.norm(dim=1) / (tgt.norm(dim=1) + eps)).mean()
+
+def relative_l2_physical(pred, target, eps=EPS_NORM):
+    """Relative L2 no campo físico"""
     diff = (pred - target).view(pred.size(0), -1)
     tgt = target.view(target.size(0), -1)
     return (diff.norm(dim=1) / (tgt.norm(dim=1) + eps)).mean()
@@ -213,11 +222,10 @@ def main():
         if CONFIG["training"]["freeze_amplitude"]:
             for param in amplitude_model.parameters():
                 param.requires_grad = False
-            print("✅ Modelo de amplitude congelado (não será treinado)")
+            print(" Modelo de amplitude congelado (não será treinado)")
     else:
-        print(f"⚠️ Modelo de amplitude não encontrado em: {AMPLITUDE_MODEL_PATH}")
+        print(f" Modelo de amplitude não encontrado em: {AMPLITUDE_MODEL_PATH}")
         print("Treinando o modelo de amplitude do zero...")
-        # Se não encontrar, vai treinar junto com o FNO
 
     # ========== NORMALIZAÇÃO ==========
     Y_norm, Y_scale = normalize_per_sample(Y)
@@ -237,14 +245,14 @@ def main():
         Y_norm[train_idx], 
         Y_scale[train_idx],
         X_amplitude[train_idx],
-        a_real_log[train_idx]
+        a_real[train_idx]  # amplitude real para métricas
     )
     val_ds = TensorDataset(
         X[val_idx], 
         Y_norm[val_idx], 
         Y_scale[val_idx],
         X_amplitude[val_idx],
-        a_real_log[val_idx]
+        a_real[val_idx]
     )
 
     train_loader = DataLoader(train_ds, batch_size=CONFIG["training"]["batch_size"], shuffle=True)
@@ -264,12 +272,12 @@ def main():
             param.requires_grad = False
 
     # ========== OTIMIZADOR ==========
-    # Apenas parâmetros do FNO (e amplitude se não estiver congelada)
     trainable_params = [p for p in model.parameters() if p.requires_grad]
     optimizer = Adam(trainable_params, lr=CONFIG["training"]["learning_rate"])
     scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
 
     train_losses, val_losses = [], []
+    val_phys_losses = []
     best_val = float("inf")
 
     # ========== TREINAMENTO ==========
@@ -277,7 +285,7 @@ def main():
         model.train()
         train_loss = 0.0
         
-        for xb, yb_norm, yb_scale, xb_amp, ab_log in train_loader:
+        for xb, yb_norm, yb_scale, xb_amp, ab_real in train_loader:
             xb = xb.to(device)
             yb_norm = yb_norm.to(device)
             xb_amp = xb_amp.to(device)
@@ -300,14 +308,15 @@ def main():
         # ========== VALIDAÇÃO ==========
         model.eval()
         val_loss = 0.0
-        val_phys_loss = 0.0
+        val_phys = 0.0
         
         with torch.no_grad():
-            for xb, yb_norm, yb_scale, xb_amp, ab_log in val_loader:
+            for xb, yb_norm, yb_scale, xb_amp, ab_real in val_loader:
                 xb = xb.to(device)
                 yb_norm = yb_norm.to(device)
                 yb_scale = yb_scale.to(device)
                 xb_amp = xb_amp.to(device)
+                ab_real = ab_real.to(device)
                 
                 y_pred, y_tilde, a_pred = model(xb, xb_amp)
                 
@@ -316,20 +325,24 @@ def main():
                 val_loss += loss.item() * xb.size(0)
                 
                 # Reconstrução física para métrica
-                y_phys = denormalize_with_amplitude(y_tilde, a_real[val_idx] if epoch == 0 else None)
-                # (Aqui você pode calcular physical loss se quiser)
+                y_phys = y_tilde * a_pred.view(-1, 1, 1, 1)
+                phys_loss = relative_l2_physical(y_phys, yb_norm * yb_scale)  # Desnormalizar
+                val_phys += phys_loss.item() * xb.size(0)
         
         val_loss /= len(val_loader.dataset)
+        val_phys /= len(val_loader.dataset)
         
         train_losses.append(train_loss)
         val_losses.append(val_loss)
+        val_phys_losses.append(val_phys)
+        
         scheduler.step(val_loss)
         
         if val_loss < best_val:
             best_val = val_loss
             torch.save(model.state_dict(), os.path.join(RUN_DIR, "model_best.pth"))
         
-        print(f"Epoch {epoch:03d} | Train: {train_loss:.4e} | Val: {val_loss:.4e}")
+        print(f"Epoch {epoch:03d} | Train: {train_loss:.4e} | Val: {val_loss:.4e} | Phys: {val_phys:.4e}")
     
     # ========== SALVAR MODELO ==========
     torch.save(model.state_dict(), os.path.join(RUN_DIR, "model.pth"))
@@ -338,6 +351,7 @@ def main():
     metrics = {
         "final_train_loss": train_losses[-1],
         "final_val_loss": val_losses[-1],
+        "final_val_physical_loss": val_phys_losses[-1],
         "best_val_loss": best_val,
         "amplitude_model": {
             "path": AMPLITUDE_MODEL_PATH,
@@ -352,9 +366,22 @@ def main():
     save_curve(train_losses, val_losses, os.path.join(RUN_DIR, "loss_curves.pdf"), 
                "Relative L2", "FNO Loss (forma normalizada)")
     
+    # Curva de loss física
+    plt.figure(figsize=(7, 4.5))
+    plt.plot(val_phys_losses, label="Validation physical")
+    plt.yscale("log")
+    plt.xlabel("Epoch")
+    plt.ylabel("Relative L2")
+    plt.title("Physical reconstruction error")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(RUN_DIR, "physical_loss.pdf"), bbox_inches="tight")
+    plt.close()
+    
     print(f"\n Treinamento finalizado!")
     print(f" Arquivos salvos em: {RUN_DIR}")
-    print(f" Best validation loss: {best_val:.4e}")
+    print(f"Best validation loss: {best_val:.4e}")
+    print(f" Final physical loss: {val_phys_losses[-1]:.4e}")
 
 if __name__ == "__main__":
     main()
