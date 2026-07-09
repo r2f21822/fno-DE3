@@ -185,12 +185,13 @@ def main():
 
 
 # ========== FILTRO: APENAS VALORES MENORES QUE A MEDIANA ==========
-   
+    a_original = a.view(-1)  # Garantir que é 1D
     a_original = 10 ** a  # Converter de log10 para escala original
     mediana_amplitude = torch.median(a_original)
     print(f"Mediana da amplitude: {mediana_amplitude.item():.6f}")
     
     mask = a_original < mediana_amplitude
+    mask = mask.squeeze() 
     n_total_original = len(X)
     n_filtrado = mask.sum().item()
     print(f"Total de amostras: {n_total_original}")
