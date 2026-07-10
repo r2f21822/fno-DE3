@@ -42,8 +42,6 @@ class FNOOnly(nn.Module):
         )
     def forward(self, x):
         return self.field_model(x)
-
-
 def clean_state_dict(state):
     if isinstance(state, dict) and "state_dict" in state:
         state = state["state_dict"]
@@ -55,9 +53,9 @@ def clean_state_dict(state):
             continue
         if k.startswith("module."):
             k = k[len("module."):]
-        # Se for modelo fatorizado, pega só o field_model
-        if k.startswith("field_model."):
-            k = k[len("field_model."):]
+        # Se NÃO tiver "field_model." no início, adiciona
+        if not k.startswith("field_model."):
+            k = "field_model." + k
         cleaned[k] = v
     return cleaned
 
