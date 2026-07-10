@@ -150,4 +150,4 @@ if __name__ == "__main__":
     parser.add_argument("--dir_modelo", type=str, help="Diretório com as metricas",default=MODELO_DIR)
     args = parser.parse_args()
     
-    metricas(args.dir)
+    metricas(args.dir_out, args.dir_modelo)
