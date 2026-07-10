@@ -38,20 +38,24 @@ def metricas(results_dir,modelo_dir):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
     
     # PLOT 1: Erro percentual e Amplitude correspondente ===================================================
- 
+
+
     ax1.scatter(all_true_exp, erro_percentual, alpha=0.5, s=20, c='blue', edgecolors='black', linewidth=0.5)
-    
-    # Linha de tendência (média)
+
+
     ax1.axhline(y=mape, color='red', linestyle='--', linewidth=2, 
                 label=f'Média (MAPE): {mape:.2f}%')
     ax1.axhline(y=mediana_erro, color='green', linestyle='--', linewidth=2, 
                 label=f'Mediana: {mediana_erro:.2f}%')
-    
+
     ax1.set_xlabel("Amplitude Real (a_gt)", fontsize=12)
     ax1.set_ylabel("Erro Percentual Absoluto (%)", fontsize=12)
     ax1.set_title(f'Erro Percentual por Amostra\n{len(all_true_exp)} amostras', fontsize=13)
     ax1.grid(True, alpha=0.3)
     ax1.legend(loc='best')
+
+    #   LIMITAR
+    ax1.set_xlim(0, 0.001)  # Limita o eixo X de 0 a 0.001
     
     # PLOT 2: Índice da amostra vs Erro ======================================================
     # Ordenar por erro para ver distribuição
