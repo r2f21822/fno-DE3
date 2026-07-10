@@ -42,6 +42,9 @@ class FNOOnly(nn.Module):
         )
     def forward(self, x):
         return self.field_model(x)
+
+
+
 def clean_state_dict(state):
     if isinstance(state, dict) and "state_dict" in state:
         state = state["state_dict"]
@@ -89,62 +92,103 @@ def polar_plot(ax, theta, f, data, title, cmap="RdBu_r", symmetric=True, symlog=
     plt.colorbar(pcm, ax=ax, pad=0.08)
 
 
-def build_title(idx, fp, Hs, gamma, th0, s):
+def _build_title(idx, fp, Hs, gamma, th0, s):
     bench = " (J&P benchmark)" if idx == 0 else ""
     return f"Amostra {idx}{bench} | Hs={Hs:.2f} m, fp={fp:.3f} Hz, gamma={gamma:.2f}, theta0={np.degrees(th0):.1f} deg, s={s}"
 
+def _polar_plot(ax, theta, f, data, cmap, vmin=None, vmax=None, title="", clabel="",
+               symlog=False, linthresh=None):
+    """
+    Plot polar com suporte a SymLogNorm para dados esparsos (quase tudo zero,
+    com picos localizados) - caso típico do S_nl.
 
-def plot_comparison(idx, E, S_gt, S_pred, St_gt, St_pred, f, theta, fp, Hs, gamma, th0, s, a_gt, a_pred):
-    err = S_pred - S_gt
-    S_gt_1d = _trapz(S_gt, theta, axis=1)
-    S_pred_1d = _trapz(S_pred, theta, axis=1)
-    rel_phys = rel_l2(S_pred, S_gt)
-    rel_shape = rel_l2(St_pred, St_gt)
-    rel_a = abs(a_pred - a_gt) / (abs(a_gt) + EPS)
+    Se symlog=True (ativado automaticamente para colormaps divergentes quando
+    os dados têm amplitude muito pequena), usa escala logarítmica simétrica
+    para tornar os picos visíveis mesmo quando a maioria dos valores é ~0.
+    """
+    TH, R = np.meshgrid(theta, f)
 
-    fig = plt.figure(figsize=(22, 12))
-    gs = GridSpec(2, 4, figure=fig, hspace=0.45, wspace=0.4)
-    fig.suptitle(build_title(idx, fp, Hs, gamma, th0, s) +
-                 f"\na_gt={a_gt:.3e}, a_pred={a_pred:.3e}, err_a={rel_a:.3e}, shape RelL2={rel_shape:.3e}, physical RelL2={rel_phys:.3e}",
-                 fontsize=12, fontweight="bold")
+    if vmin is None: vmin = float(data.min())
+    if vmax is None: vmax = float(data.max())
 
-    # Linha 0: Campos físicos
-    ax = fig.add_subplot(gs[0, 0], projection="polar")
-    polar_plot(ax, theta, f, E, "E(f, theta) input", cmap="hot_r", symmetric=False, symlog=False)
-    
-    ax = fig.add_subplot(gs[0, 1], projection="polar")
-    polar_plot(ax, theta, f, S_gt, "S_nl ground truth")
-    
-    ax = fig.add_subplot(gs[0, 2], projection="polar")
-    polar_plot(ax, theta, f, S_pred, "S_nl reconstruído (FNO * a)")
-    
-    ax = fig.add_subplot(gs[0, 3], projection="polar")
-    polar_plot(ax, theta, f, err, "Erro físico (pred - GT)", cmap="PiYG")
+    norm = None
+    if symlog:
+        # linthresh: faixa linear ao redor do zero (evita log(0))
+        # Se não fornecido, usa 1% do valor máximo absoluto
+        lt = linthresh if linthresh is not None else max(abs(vmax), abs(vmin)) * 0.01
+        lt = lt if lt > 0 else 1e-10
+        norm = mcolors.SymLogNorm(linthresh=lt, vmin=vmin, vmax=vmax, base=10)
 
-    # Linha 1: Campos normalizados
-    ax = fig.add_subplot(gs[1, 0], projection="polar")
-    polar_plot(ax, theta, f, St_gt, "S_nl normalizado GT")
-    
-    ax = fig.add_subplot(gs[1, 1], projection="polar")
-    polar_plot(ax, theta, f, St_pred, "S_nl normalizado pred (FNO)")
+    pcm = ax.pcolormesh(TH, R, data, cmap=cmap, norm=norm,
+                        vmin=(None if norm else vmin),
+                        vmax=(None if norm else vmax),
+                        shading="auto")
+    plt.colorbar(pcm, ax=ax, label=clabel, pad=0.08)
+    ax.set_title(title, pad=15, fontsize=10)
+    return pcm
 
-    # Integral direcional
-    ax = fig.add_subplot(gs[1, 2:])
-    ax2 = ax.twinx()
-    ax2.plot(f, S_gt_1d, "k-", lw=2, label="S_nl GT")
-    ax2.plot(f, S_pred_1d, "r--", lw=1.8, label="S_nl pred (FNO * a)")
-    ax.axvline(fp, color="blue", ls="--", lw=1, label=f"fp={fp:.3f} Hz")
-    ax.set_xlabel("f (Hz)")
-    ax.set_ylabel("E(f)")
-    ax2.set_ylabel("Integral direcional de S_nl")
-    ax.grid(True, ls=":", alpha=0.5)
-    lines1, labels1 = ax.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax2.legend(lines1 + lines2, labels1 + labels2, fontsize=9)
-    ax.set_title("Integral direcional")
-    
-    return fig, {"rel_phys": rel_phys, "rel_shape": rel_shape, "rel_a": rel_a}
+def plot_comparison(idx, E_2d, Snl_gt, Snl_pred, f, theta, fp, Hs, gamma, th0, s):
+    error        = Snl_pred - Snl_gt          # erro na escala física
+    Snl_1d_gt   = _trapz(Snl_gt,   theta, axis=1)
+    Snl_1d_pred = _trapz(Snl_pred, theta, axis=1)
+    E_1d        = _trapz(E_2d,     theta, axis=1)
 
+    # Layout: 2 linhas x 4 colunas
+    fig = plt.figure(figsize=(22, 11))
+    gs  = GridSpec(2, 4, figure=fig, hspace=0.45, wspace=0.4)
+    fig.suptitle(
+        _build_title(idx, fp, Hs, gamma, th0, s) + "\n[Comparação: FNO vs Ground Truth]",
+        fontsize=12, fontweight="bold"
+    )
+
+    vmax_snl = float(max(np.max(np.abs(Snl_gt)), np.max(np.abs(Snl_pred)))) or 1e-30
+    vmax_err = float(np.max(np.abs(error))) or 1e-30
+
+    # (0,0) Polar E - Input
+    ax00 = fig.add_subplot(gs[0, 0], projection="polar")
+    _polar_plot(ax00, theta, f, E_2d, "hot_r",
+                title="E(f, θ) — Input", clabel="m² Hz⁻¹ rad⁻¹")
+
+    # (0,1) Polar Snl GT
+    ax01 = fig.add_subplot(gs[0, 1], projection="polar")
+    _polar_plot(ax01, theta, f, Snl_gt, "RdBu_r",
+                vmin=-vmax_snl, vmax=vmax_snl,
+                title="S_nl — Ground Truth (DE3)",
+                clabel="m² Hz⁻¹ rad⁻¹ s⁻¹", symlog=True)
+
+    # (0,2) Polar Snl FNO
+    ax02 = fig.add_subplot(gs[0, 2], projection="polar")
+    _polar_plot(ax02, theta, f, Snl_pred, "RdBu_r",
+                vmin=-vmax_snl, vmax=vmax_snl,
+                title="S_nl — Predição FNO",
+                clabel="m² Hz⁻¹ rad⁻¹ s⁻¹", symlog=True)
+
+    # (0,3) Polar Erro (FNO − GT) - colormap divergente centrado em zero
+    ax03 = fig.add_subplot(gs[0, 3], projection="polar")
+    _polar_plot(ax03, theta, f, error, "PiYG",
+                vmin=-vmax_err, vmax=vmax_err,
+                title="Erro  (FNO − GT)",
+                clabel="m² Hz⁻¹ rad⁻¹ s⁻¹", symlog=True)
+
+    # (1,0) 1D E(f)
+    ax10 = fig.add_subplot(gs[1, 0])
+    ax10.plot(f, E_1d, "k-", lw=2)
+    ax10.axvline(fp, color="red", ls="--", lw=1, label=f"fp={fp:.2f} Hz")
+    ax10.set_title("Espectro Integrado 1D  E(f)", fontsize=10)
+    ax10.set_xlabel("f (Hz)"); ax10.set_ylabel("E(f) (m² Hz⁻¹)")
+    ax10.grid(True, ls=":", alpha=0.6); ax10.legend()
+
+    # (1,1:4) 1D Snl comparativo - ocupa as 3 colunas restantes
+    ax11 = fig.add_subplot(gs[1, 1:])
+    ax11.plot(f, Snl_1d_gt,   "k-",  lw=2.0, label="Ground Truth (DE3)")
+    ax11.plot(f, Snl_1d_pred, "r--", lw=1.8, label="FNO predito")
+    ax11.axhline(0,  color="k",    ls="-",  lw=0.7)
+    ax11.axvline(fp, color="blue", ls="--", lw=1.0, label=f"fp={fp:.2f} Hz")
+    ax11.set_title("Integral Direcional  S_nl(f)", fontsize=10)
+    ax11.set_xlabel("f (Hz)"); ax11.set_ylabel("S_nl(f) (m² Hz⁻¹ s⁻¹)")
+    ax11.legend(fontsize=9); ax11.grid(True, ls=":", alpha=0.6)
+
+    return fig
 
 def main():
     pa = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -225,8 +269,10 @@ def main():
 
     print(f"\nGerando gráfico...")
     os.makedirs(args.out_dir, exist_ok=True)
+
+    #def plot_comparison(idx, E_2d, Snl_gt, Snl_pred, f, theta, fp, Hs, gamma, th0, s):
     
-    fig, _ = plot_comparison(idx, E, S_gt, S_pred, St_gt, St_pred, f, theta, fp, Hs, gamma, th0, s, a_gt, a_pred)
+    fig, _ = plot_comparison(idx, E, S_gt, S_pred, f, theta, fp, Hs, gamma, th0, s)
     
     out = os.path.join(args.out_dir, f"fno_with_amplitude_sample_{idx}.png")
     fig.savefig(out, dpi=150, bbox_inches="tight")
