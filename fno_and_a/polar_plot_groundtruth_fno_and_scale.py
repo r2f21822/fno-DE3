@@ -272,7 +272,7 @@ def main():
 
     #def plot_comparison(idx, E_2d, Snl_gt, Snl_pred, f, theta, fp, Hs, gamma, th0, s):
     
-    fig, _ = plot_comparison(idx, E, S_gt, S_pred, f, theta, fp, Hs, gamma, th0, s)
+    fig = plot_comparison(idx, E, S_gt, S_pred, f, theta, fp, Hs, gamma, th0, s)
     
     out = os.path.join(args.out_dir, f"fno_with_amplitude_sample_{idx}.png")
     fig.savefig(out, dpi=150, bbox_inches="tight")
