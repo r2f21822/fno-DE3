@@ -17,7 +17,7 @@ def metricas(results_dir,modelo_dir):
     all_true_exp = 10 ** all_true.flatten()
     
    
-    erro_percentual = np.abs((all_true_exp - all_pred_exp) / (all_true_exp + 1e-10)) * 100
+    erro_percentual = ((all_true_exp - all_pred_exp) / (all_true_exp + 1e-10)) * 100
     
     mape = np.mean(erro_percentual)
     mediana_erro = np.median(erro_percentual)
@@ -56,7 +56,7 @@ def metricas(results_dir,modelo_dir):
                 label=f'Mediana: {mediana_erro:.2f}%')
 
     ax1.set_xlabel("Amostra (ordenada por amplitude crescente)", fontsize=12)
-    ax1.set_ylabel("Erro Percentual Absoluto (%)", fontsize=12)
+    ax1.set_ylabel("Erro Percentual  (%)", fontsize=12)
     ax1.set_title(f'Erro Percentual por Amostra\n{len(all_true_exp)} amostras', fontsize=13)
     ax1.grid(True, alpha=0.3)
     ax1.legend(loc='best')
