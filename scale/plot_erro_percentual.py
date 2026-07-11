@@ -40,22 +40,42 @@ def metricas(results_dir,modelo_dir):
     # PLOT 1: Erro percentual e Amplitude correspondente ===================================================
 
 
-    ax1.scatter(all_true_exp, erro_percentual, alpha=0.5, s=20, c='blue', edgecolors='black', linewidth=0.5)
+    sorted_idx_amp = np.argsort(all_true_exp)
+    erro_sorted = erro_percentual[sorted_idx_amp]
+    amp_sorted = all_true_exp[sorted_idx_amp]
 
+    # Plotar cada amostra como um ponto
+    scatter = ax1.scatter(np.arange(len(erro_sorted)), erro_sorted, 
+                        alpha=0.6, s=20, c=erro_sorted, 
+                        cmap='plasma', edgecolors='black', linewidth=0.5)
 
+    # Linhas de referência
     ax1.axhline(y=mape, color='red', linestyle='--', linewidth=2, 
                 label=f'Média (MAPE): {mape:.2f}%')
     ax1.axhline(y=mediana_erro, color='green', linestyle='--', linewidth=2, 
                 label=f'Mediana: {mediana_erro:.2f}%')
 
-    ax1.set_xlabel("Amplitude Real (a_gt)", fontsize=12)
+    ax1.set_xlabel("Amostra (ordenada por amplitude crescente)", fontsize=12)
     ax1.set_ylabel("Erro Percentual Absoluto (%)", fontsize=12)
     ax1.set_title(f'Erro Percentual por Amostra\n{len(all_true_exp)} amostras', fontsize=13)
     ax1.grid(True, alpha=0.3)
     ax1.legend(loc='best')
 
-    #   LIMITAR
-    ax1.set_xlim(0, 0.001)  # Limita o eixo X de 0 a 0.001
+    # Adicionar barra de cores
+    cbar = plt.colorbar(scatter, ax=ax1)
+    cbar.set_label('Erro Percentual (%)', fontsize=10)
+
+    # Adicionar segundo eixo X com a amplitude
+    ax1_twin = ax1.twiny()
+    ax1_twin.set_xlim(ax1.get_xlim())
+
+    # Mostrar algumas amplitudes no eixo superior
+    n_ticks = 5
+    tick_positions = np.linspace(0, len(erro_sorted)-1, n_ticks, dtype=int)
+    tick_labels = [f'{amp_sorted[i]:.2e}' for i in tick_positions]
+    ax1_twin.set_xticks(tick_positions)
+    ax1_twin.set_xticklabels(tick_labels, fontsize=8)
+    ax1_twin.set_xlabel("Amplitude Real (a_gt)", fontsize=10)
     
     # PLOT 2: Índice da amostra vs Erro ======================================================
     # Ordenar por erro para ver distribuição
