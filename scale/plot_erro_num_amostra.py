@@ -6,7 +6,7 @@ import h5py
 
 MODELO_DIR = "scale/results_scale_loggamma_s"
 RUN_DIR = "scale/results_scale_loggamma_s"
-DATASET_FILE = "Generate_data/snl_data/snl_dataset.h5"  # Caminho para o dataset
+DATASET_FILE = "Generate_data/snl_data/snl_dataset.h5"
 
 def metricas(results_dir, modelo_dir, dataset_file=None):
    
@@ -32,13 +32,13 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
         try:
             with h5py.File(dataset_file, "r") as hf:
                 Hs_values = hf["Hs"][:]
-                print(f"✅ Hs carregado do dataset: {len(Hs_values)} amostras")
+                print(f"Hs carregado do dataset: {len(Hs_values)} amostras")
                 print(f"   Hs - min: {Hs_values.min():.2f}, max: {Hs_values.max():.2f}, média: {Hs_values.mean():.2f}")
         except Exception as e:
-            print(f"⚠️ Erro ao carregar Hs: {e}")
+            print(f" Erro ao carregar Hs: {e}")
             Hs_values = None
     else:
-        print(f"⚠️ Dataset não encontrado: {dataset_file}")
+        print(f" Dataset não encontrado: {dataset_file}")
         print("   Plot ordenado por Hs não será gerado")
     
     print("="*60)
@@ -119,10 +119,10 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
     
     # ==================== PLOT 3: Erro ordenado por Hs ====================
     if Hs_values is not None:
-   
+        # Verificar se o tamanho bate
         if len(Hs_values) != len(erro_percentual):
             print(f" Tamanho do Hs ({len(Hs_values)}) não bate com erro ({len(erro_percentual)})")
-       
+            # Truncar para o menor tamanho
             min_len = min(len(Hs_values), len(erro_percentual))
             Hs_values = Hs_values[:min_len]
             erro_percentual_hs = erro_percentual[:min_len]
@@ -131,19 +131,19 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
             erro_percentual_hs = erro_percentual
             erro_absoluto_hs = erro_absoluto
         
-      
+        # Ordenar por Hs crescente
         sorted_idx_hs = np.argsort(Hs_values)
         Hs_sorted = Hs_values[sorted_idx_hs]
         erro_sorted_hs = erro_percentual_hs[sorted_idx_hs]
         
-       
+        # Cores para o plot por Hs
         cores_hs = ['green' if e > 0 else 'red' for e in erro_sorted_hs]
         
-        
+        # Scatter plot: erro vs Hs
         ax3.scatter(Hs_sorted, erro_sorted_hs, 
                     alpha=0.6, s=25, c=cores_hs, edgecolors='black', linewidth=0.5)
         
-
+        # Linhas de referência
         ax3.axhline(y=0, color='black', linestyle='-', linewidth=1.5, alpha=0.7, label='Erro zero')
         ax3.axhline(y=mape, color='red', linestyle='--', linewidth=2, 
                     label=f'MAPE: {mape:.2f}%')
@@ -152,7 +152,7 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
                     label=f'Mediana: {mediana_erro:.2f}%')
         ax3.axhline(y=-mediana_erro, color='green', linestyle='--', linewidth=1.5, alpha=0.5)
         
-     
+        # Linha de tendência (regressão)
         z = np.polyfit(Hs_sorted, erro_sorted_hs, 1)
         p = np.poly1d(z)
         ax3.plot(Hs_sorted, p(Hs_sorted), 'orange', linestyle='-', alpha=0.7, linewidth=2,
@@ -164,14 +164,14 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
         ax3.grid(True, alpha=0.3)
         ax3.legend(loc='best', fontsize=9)
         
-       
+
         ax3.text(0.02, 0.98, stats_text, 
                  transform=ax3.transAxes, 
                  verticalalignment='top', horizontalalignment='left',
                  bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
                  fontsize=9)
         
- 
+  
         correlacao = np.corrcoef(Hs_sorted, erro_absoluto_hs[sorted_idx_hs])[0, 1]
         ax3.text(0.98, 0.02, f'Correlação |erro| vs Hs: {correlacao:.3f}', 
                  transform=ax3.transAxes, 
@@ -179,7 +179,7 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
                  bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
                  fontsize=9)
         
-    
+
         print("\n" + "="*60)
         print("ANÁLISE DO ERRO POR FAIXA DE Hs")
         print("="*60)
@@ -190,14 +190,14 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
                 erro_medio = np.mean(erro_absoluto[mask])
                 erro_std = np.std(erro_absoluto[mask])
                 n_amostras = np.sum(mask)
-        
+              
                 erro_medio_sinal = np.mean(erro_percentual[mask])
                 tendencia = "subestima" if erro_medio_sinal > 0 else "superestima"
                 print(f"Hs [{hs_min:.0f}, {hs_max:.0f}): n={n_amostras:3d}, "
                       f"MAPE={erro_medio:.2f}% ± {erro_std:.2f}%, "
                       f"tendência: {tendencia} ({erro_medio_sinal:+.2f}%)")
     else:
-    
+
         ax3.text(0.5, 0.5, 'Hs não disponível\nPara gerar este plot,\nforneça o dataset com Hs',
                  horizontalalignment='center', verticalalignment='center',
                  transform=ax3.transAxes, fontsize=14, color='gray')
@@ -207,7 +207,7 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
     
     plt.tight_layout()
     
-   
+    # Salvar gráfico principal
     out_file = os.path.join(results_dir, "erro_por_amostra_com_hs.pdf")
     plt.savefig(out_file, dpi=150, bbox_inches='tight')
     plt.close()
@@ -244,12 +244,12 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
     out_file2 = os.path.join(results_dir, "boxplot_erro_percentual.pdf")
     plt.savefig(out_file2, dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Boxplot salvo em: {out_file2}")
+    print(f" Boxplot salvo em: {out_file2}")
     
-    
+
     if Hs_values is not None and len(Hs_values) == len(erro_percentual):
         error_data = np.column_stack((
-            np.arange(len(erro_percentual)), 
+            np.arange(len(erro_percentual)),  # Índice original
             Hs_values,
             all_true_exp,
             all_pred_exp,
@@ -259,7 +259,7 @@ def metricas(results_dir, modelo_dir, dataset_file=None):
         header = "Amostra\tHs\tAmplitude_Real\tAmplitude_Predita\tErro_Percentual\tErro_Absoluto"
     else:
         error_data = np.column_stack((
-            np.arange(len(erro_percentual)), 
+            np.arange(len(erro_percentual)),  # Índice original
             all_true_exp,
             all_pred_exp,
             erro_percentual,
