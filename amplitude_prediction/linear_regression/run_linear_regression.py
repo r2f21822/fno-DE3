@@ -7,13 +7,11 @@ import argparse
 import json
 import os
 import yaml
-
 import h5py
 import numpy as np
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
-from torchmetrics.regression import R2Score
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
@@ -55,31 +53,6 @@ def load_hs_fp_dataset(path):
     
     return Hs, fp,Y, gamma,s
 
-def compute_stats(tensor):
-    return {
-        "min": float(tensor.min()),
-        "max": float(tensor.max()),
-        "mean": float(tensor.mean()),
-        "std": float(tensor.std()),
-    }
-
-
-# ---------------------------------------------------------------------------
-# Plots
-# ---------------------------------------------------------------------------
-
-def save_curve(train_values, val_values, out_path, ylabel, title):
-    plt.figure(figsize=(7, 4.5))
-    plt.plot(train_values, label="Train")
-    plt.plot(val_values, label="Validation")
-    plt.yscale("log")
-    plt.xlabel("Epoch")
-    plt.ylabel(ylabel)
-    plt.title(title)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(out_path, bbox_inches="tight")
-    plt.close()
 
 
 def main():
@@ -87,15 +60,9 @@ def main():
     pa.add_argument("--h5file", default=DATA_PATH)
     pa.add_argument("--out-dir", default=RUN_DIR)
     pa.add_argument("--out-dir_figs", default=FIG_DIR)
-    pa.add_argument("--epochs", type=int, default=100)
-    pa.add_argument("--batch", type=int, default=16)
-    pa.add_argument("--lr", type=float, default=1e-3)
-    pa.add_argument("--scale-head-hidden", type=int, default=128)
     pa.add_argument("--seed", type=int, default=42)
     args = pa.parse_args()
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Running on device: {device}")
     os.makedirs(args.out_dir, exist_ok=True)
     os.makedirs(args.out_dir_figs, exist_ok=True)
 
@@ -162,6 +129,9 @@ def main():
 
     print(f"Previsões salvas em: {args.out_dir}")
 
+
+    #grafico de log(A)
+
     min_val = min(y_val.min(), all_pred.min())
     max_val = max(y_val.max(), all_pred.max())
 
@@ -196,12 +166,11 @@ def main():
     mae_log = mean_absolute_error(y_val, all_pred)
     mse_log = mean_squared_error(y_val, all_pred)
     rmse_log = np.sqrt(mse_log)
-    print(f"  MAE:  {mae_log:.6f}")
-    print(f"  MSE:  {mse_log:.6f}")
-    print(f"  RMSE: {rmse_log:.6f}")
+    print(f" log(A) MAE:  {mae_log:.6f}")
+    print(f" log(A) MSE:  {mse_log:.6f}")
+    print(f" log(A) RMSE: {rmse_log:.6f}")
 
-    
-    # ========== MÉTRICAS NA ESCALA ORIGINAL ==========
+
     y_val_exp = 10 ** y_val
     all_pred_exp = 10 ** all_pred
     
@@ -212,11 +181,17 @@ def main():
     mse = mean_squared_error(y_val_exp, all_pred_exp)
     rmse = np.sqrt(mse)
     r2 = r2_score(y_val_exp, all_pred_exp)
-    print(f"  MAE:  {mae:.6f}")
-    print(f"  MSE:  {mse:.6f}")
-    print(f"  RMSE: {rmse:.6f}")
-    print(f"  R²:   {r2:.6f}")
+    print(f" A MAE:  {mae:.6f}")
+    print(f" A MSE:  {mse:.6f}")
+    print(f" A RMSE: {rmse:.6f}")
+    print(f" A R2:   {r2:.6f}")
     print("="*60)
+
+    
+
+
+
+
 
 
 
