@@ -1,4 +1,7 @@
-##fno-DE3/
+# fno-DE3
+
+Estrutura do projeto:
+
 ├── shape_prediction/
 │ ├── fno_and_a/
 │ │ ├──
