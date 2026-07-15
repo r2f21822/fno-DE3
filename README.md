@@ -16,12 +16,14 @@ pip install -e .
 
 
 Generate_data
+  
   -python /generate_snl_data.py \
       --n-samples 5000 \
       --n-f 128 \
       --n-theta 64 \
       --out data/snl/snl_dataset.h5
       gera o dataset
+    
     -python /plot_amplitude_histogram.py
       gera um histograma do log10 (amplitude)
 
