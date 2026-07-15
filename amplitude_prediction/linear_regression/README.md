@@ -2,7 +2,7 @@
 	/linear_regression
         comandos de execução no diretorio fno-DE3:
 
-		- python amplitude_prediction/linear_regression/run_linear_regression.py
+		**python amplitude_prediction/linear_regression/run_linear_regression.py**
             parametris modificaveis:
                         --h5file (diretorio dos dados, defult="Generate_data/snl/snl_dataset.h5")
                         --out-dir (diretorio de saida dos resultados do modelo, defult="amplitude_prediction/linear_regression/results")
