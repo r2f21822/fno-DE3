@@ -205,11 +205,6 @@ def main():
     y_pred = X_val_com_bias @ beta
     
 
-    mse = torch.mean((y_pred - y_val) ** 2).item()
-    print(f"MSE na validação: {mse:.6f}")
-
-    print("MSE:")
-
 
     all_true = y_val.cpu().numpy().flatten()  
     all_pred = y_pred.cpu().numpy().flatten()
@@ -261,6 +256,8 @@ def main():
         # Grafico com exponenciacao base 10
     all_true_exp1 = 10 ** all_true
     all_pred_exp1 = 10 ** all_pred
+    r2score = R2Score()
+
 
     print("A - Erro Medio Absoluto: ",np.mean(np.abs(all_true_exp1 - all_pred_exp1)))  
     print("A - Erro Quadratico Médio :",np.mean((all_true_exp1 - all_pred_exp1) ** 2))   
@@ -270,8 +267,7 @@ def main():
 
 
     listaLimitaoes=[np.max(all_true),1,0.1,0.001,0.0001]
-    #oioi
-    #kcdmsck
+    
     for limitacao in listaLimitaoes:
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limitacao) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limitacao)
         all_true_exp = all_true_exp1[mask]
