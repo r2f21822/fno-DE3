@@ -1,7 +1,8 @@
 # fno-DE3
 
-Estrutura do projeto:
 
+Estrutura do projeto:
+```texto
 ├── shape_prediction/
 │ ├── fno_and_a/
 │ │ ├──
@@ -34,3 +35,4 @@ Estrutura do projeto:
 │ └── README.md
 │
 └── README.md
+```
