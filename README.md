@@ -3,8 +3,15 @@
 alguns graficos gerados sobre as amplitudes
 https://docs.google.com/document/d/1SsbUDqbjY68CgEQUsn-VKUKeMlNCRM00g4Vq17MCV-I/edit?tab=t.0 
 
+
+
+
 git clone 
 cd fno-DE3
+
+
+
+
 
 On Linux/macOS:
 source venv/bin/activate
@@ -12,8 +19,14 @@ source venv/bin/activate
 On Windows:
 venv\Scripts\activate
 
+
+
 pip install --upgrade pip
+
+
 pip install -r requirements.txt
+
+
 pip install -e .
 
 
