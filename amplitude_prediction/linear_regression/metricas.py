@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import argparse
 
-RUN_DIR="scale/results_scale_loggamma_s"
+RUN_DIR="amplitude_prediction/linear_regression/results"
 
 def metricas(results_dir):
     
