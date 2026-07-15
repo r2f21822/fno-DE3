@@ -1,8 +1,8 @@
 # fno-DE3
 https://docs.google.com/document/d/1SsbUDqbjY68CgEQUsn-VKUKeMlNCRM00g4Vq17MCV-I/edit?tab=t.0 
 
-git clone https://github.com/tclos/fno-diffusion.git
-cd fno-diffusion
+git clone 
+cd fno-DE3
 
 On Linux/macOS:
 source venv/bin/activate
