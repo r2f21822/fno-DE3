@@ -1,4 +1,6 @@
 # fno-DE3
+
+alguns graficos gerados sobre as amplitudes
 https://docs.google.com/document/d/1SsbUDqbjY68CgEQUsn-VKUKeMlNCRM00g4Vq17MCV-I/edit?tab=t.0 
 
 git clone 
@@ -16,8 +18,10 @@ pip install -e .
 
 
 ###Generate_data 
-  
-  -python /generate_snl_data.py
+
+
+
+    -python  /generate_snl_data.py
       gera o dataset
     
     -python /plot_amplitude_histogram.py
@@ -28,6 +32,7 @@ pip install -e .
     
     -python plot_loga_logHs_logFp.py
       grafico de relação entre log10(amplitude) e log10(Hp), log10(amplitued) e log10(Fp)
+      
 ###scale
   - python scale/run_training_scale_loggamma.py
       treina com uma regressão linear (log(Hs), log(fp), log(gamma), (s))
@@ -35,7 +40,7 @@ pip install -e .
       graficos limitados por tamanho de amostra e numero de X menores amostras
     
   - python scale/plot_erro_percentual.py
-      grafico do erro porcentual por amostra ordenada
+      grafico do erro porcentual e erro percetaul absoluto por amostra ordenada
   
 ###fno_and_a
   - python fno_and_a/polar_plot_groundtruth_fno_and_scale.py --idx=X
