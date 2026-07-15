@@ -36,3 +36,14 @@ Estrutura do projeto:
 │
 └── README.md
 ```
+
+# Para treinar o modelo
+
+1. Gerar os dados 
+```texto
+  python Generate_data/generate_snl_data.py --n-sample 5000
+  ```
+2. Regressão linear de log(A)
+```texto
+  python amplitude_prediction/linear_regression/run_linear_regression.py
+  ```
