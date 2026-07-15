@@ -271,38 +271,8 @@ def main():
     rmse_percentual = (np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2)) / np.mean(all_true_exp1)) * 100
     print(f"RMSE percentual: {rmse_percentual}%")
 
-    listaLimitaoes=[1,0.1,0.001,0.0001]
 
-    all_true_exp = all_true_exp1
-    all_pred_exp = all_pred_exp1
-
-    min_val_exp = min(all_true_exp.min(), all_pred_exp.min())
-    max_val_exp = max(all_true_exp.max(), all_pred_exp.max())
-
-    plt.figure(figsize=(6, 5))
-    plt.scatter(all_true_exp, all_pred_exp, alpha=0.3, s=5)
-
-    plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-    plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-    plt.axis('equal')
-    plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-                [min_val_exp * 0.9, max_val_exp * 1.1],
-                'r--', lw=2, label='Ideal')
-
-    plt.xlabel('Amplitude Real (10^x)')
-    plt.ylabel('Amplitude Predita (10^x)')
-    plt.title(f'Real vs Predito (escala original) - {len(all_true)} amostras')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-
-
-    nome_grafico_limitado = "amplitude_original.pdf"
-
-    plt.savefig(os.path.join(args.out_dir, nome_grafico_limitado), dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir, nome_grafico_limitado)}")
+    listaLimitaoes=[np.max(all_pred),1,0.1,0.001,0.0001]
     
     for limitacao in listaLimitaoes:
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limitacao) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limitacao)
