@@ -262,7 +262,8 @@ def main():
     print("A - Erro Medio Absoluto: ",np.mean(np.abs(all_true_exp1 - all_pred_exp1)))  
     print("A - Erro Quadratico Médio :",np.mean((all_true_exp1 - all_pred_exp1) ** 2))   
     print("A - Raiz Erro Quadratico Medio",np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2))) 
-    print("A - R2: ",r2score(all_pred_exp1,all_true_exp1 )) 
+    r2=r2score(all_pred_exp1,all_true_exp1 )
+    print("A - R2: ",r2.item()) 
 
 
 
