@@ -75,6 +75,11 @@ def metricas(results_dir,modelo_dir):
     ax1.set_xticks(tick_positions)
     ax1.set_xticklabels(tick_labels, fontsize=8)
    
+
+    out_file = os.path.join(results_dir, "erro_percentual_por_amostra_ordenada.pdf")
+    plt.savefig(out_file, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Gráfico salvo em: {out_file}")
     
     
     return {
