@@ -272,7 +272,7 @@ def main():
     print(f"RMSE percentual: {rmse_percentual}%")
 
 
-    listaLimitaoes=[np.max(all_pred),1,0.1,0.001,0.0001]
+    listaLimitaoes=[np.max(all_true),1,0.1,0.001,0.0001]
     
     for limitacao in listaLimitaoes:
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limitacao) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limitacao)
