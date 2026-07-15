@@ -49,5 +49,8 @@ pip install -e .
 
         
 ###fno_and_a
+
+
+
     - python fno_and_a/polar_plot_groundtruth_fno_and_scale.py --idx=X
       grafico por amostra X, juntando fno e escala pre-treinada
