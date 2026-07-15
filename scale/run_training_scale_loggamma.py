@@ -54,7 +54,6 @@ def factorize_target(Y, eps=EPS):
 # ---------------------------------------------------------------------------
 
 class ScaleHead(nn.Module):
-    """MLP que prevê amplitude a partir de (Hs, fp)"""
     def __init__(self, hidden=64):
         super().__init__()
         self.net = nn.Sequential(
@@ -126,11 +125,9 @@ def save_curve(train_values, val_values, out_path, ylabel, title):
     plt.close()
 
 class LinearRegressor(nn.Module):
-    #y = w1*x1 + w2*x2 + b
-    #sem camadas ou função de ativação
     def __init__(self):
         super().__init__()
-        self.linear = nn.Linear(4, 1)  # 2 entradas (Hs, fp), 1 saída (log(a))
+        self.linear = nn.Linear(4, 1) 
 
     def forward(self, x):
         return self.linear(x)
@@ -172,129 +169,61 @@ def main():
     with open(os.path.join(args.out_dir, "config.yaml"), "w") as f:
         yaml.dump(config, f, sort_keys=False)
 
-    hs, fp, Y,gamma,s = load_hs_fp_dataset(args.h5file)
 
-
+    hs, fp, Y, gamma, s = load_hs_fp_dataset(args.h5file)
+    
     a = factorize_target(Y)
-    a = torch.log10(a + EPS)  
+    a = torch.log10(a + EPS)
     
+    X = torch.stack([torch.log10(hs+EPS), torch.log10(fp+EPS), 
+                     torch.log10(gamma), s], dim=1)
     
-
-    X = torch.stack([torch.log10(hs+EPS), torch.log10(fp+EPS),torch.log10(gamma),s], dim=1)
-   # X = torch.log(X + EPS)  
-
-
-
+    # Dividir em treino/validação
     n_total = len(X)
     n_train = int(0.8 * n_total)
     indices = torch.randperm(n_total, generator=torch.Generator().manual_seed(args.seed))
     train_idx = indices[:n_train]
     val_idx = indices[n_train:]
+    
+    X_train = X[train_idx]
+    y_train = a[train_idx]
+    X_val = X[val_idx]
+    y_val = a[val_idx]
+    
+    X_train_com_bias = torch.cat([torch.ones(X_train.shape[0], 1), X_train], dim=1)
 
-    train_ds = TensorDataset(X[train_idx], a[train_idx])
-    val_ds = TensorDataset(X[val_idx], a[val_idx])
-    train_loader = DataLoader(train_ds, batch_size=args.batch, shuffle=True)
-    val_loader = DataLoader(val_ds, batch_size=args.batch)
-#LinearRegressor
-    model = LinearRegressor().to(device)
-
-    optimizer = Adam(model.parameters(), lr=args.lr)
-    scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=10)
-
-    train_losses, val_losses = [], []
-    best_val = float("inf")
-
-    for epoch in range(args.epochs):
-        model.train()
-        tr_loss = 0.0
-
-        for xb, ab in train_loader:
-            xb = xb.to(device)
-            ab = ab.to(device)
-
-            optimizer.zero_grad()
-            pred_a = model(xb)
-
-            loss =scale_mse(pred_a, ab)
-            loss.backward()
-            optimizer.step()
-
-            tr_loss += loss.item() * xb.size(0)
-
-        tr_loss /= len(train_loader.dataset)
-
-        model.eval()
-        vl_loss = 0.0
-        with torch.no_grad():
-            for xb, ab in val_loader:
-                xb = xb.to(device)
-                ab = ab.to(device)
-
-                pred_a = model(xb)
-                loss =scale_mse(pred_a, ab)
-                vl_loss += loss.item() * xb.size(0)
-
-        vl_loss /= len(val_loader.dataset)
-
-        train_losses.append(tr_loss)
-        val_losses.append(vl_loss)
-
-        scheduler.step(vl_loss)
-
-        if vl_loss < best_val:
-            best_val = vl_loss
-            torch.save(model.state_dict(), os.path.join(args.out_dir, "model_best.pth"))
-
-        print(f"Epoch {epoch:03d} | Train loss: {tr_loss:.4e} | Val loss: {vl_loss:.4e}")
-
-    torch.save(model.state_dict(), os.path.join(args.out_dir, "model.pth"))
-
-    # Depois de treinar o modelo
-
-# Pegar os pesos e bias
-    w = model.linear.weight.detach().cpu().numpy().flatten()
-    b = model.linear.bias.detach().cpu().numpy().item()
-
-    print(f"Coeficientes:")
+    beta = torch.linalg.lstsq(X_train_com_bias, y_train).solution
+    
+ 
+    b = beta[0].item()  
+    w = beta[1:].flatten().cpu().numpy()  
+    
+    print(f"Coeficientes encontrados:")
     print(f"  w1 = {w[0]:.6f}  (log(Hs))")
     print(f"  w2 = {w[1]:.6f}  (log(fp))")
+    print(f"  w3 = {w[2]:.6f}  (log(gamma))")
+    print(f"  w4 = {w[3]:.6f}  (s)")
     print(f"  b  = {b:.6f}")
+    
+  
+    X_val_com_bias = torch.cat([torch.ones(X_val.shape[0], 1), X_val], dim=1)
+    y_pred = X_val_com_bias @ beta
+    
+
+    mse = torch.mean((y_pred - y_val) ** 2).item()
+    print(f"MSE na validação: {mse:.6f}")
 
     print("MSE:")
 
-    metrics = {
-        "final_train_loss": train_losses[-1],
-        "final_val_loss": val_losses[-1],
-        "best_val_loss": best_val,
-        "train_stats": {
-            "a": compute_stats(a[train_idx]),
-        },
-        "config": config,
-    }
-    with open(os.path.join(args.out_dir, "metrics.json"), "w") as f:
-        json.dump(metrics, f, indent=2)
 
-    save_curve(train_losses, val_losses, os.path.join(args.out_dir, "loss_scale.pdf"), "Log-MSE", "Scale loss: log-MSE em a")
-
-    model.eval()
-    all_true = []
-    all_pred = []
-
-    with torch.no_grad():
-        for xb, yb in val_loader:
-            xb = xb.to(device)
-            yb = yb.to(device)
-            pred = model(xb)
-            all_true.extend(yb.cpu().numpy().flatten())
-            all_pred.extend(pred.cpu().numpy().flatten())
-            
-    
-
+    all_true = y_val.cpu().numpy().flatten()  
+    all_pred = y_pred.cpu().numpy().flatten()
     all_true = np.array(all_true)
     all_pred = np.array(all_pred)
 
     np.save(os.path.join(args.out_dir, "all_pred.npy"), all_pred)
     np.save(os.path.join(args.out_dir, "all_true.npy"), all_true)
+    print(f"Previsões salvas em: {args.out_dir}")
 
 
     print(f"Previsões salvas em: {args.out_dir}")
@@ -309,7 +238,7 @@ def main():
     plt.ylim(min_val - 0.5, max_val + 0.5)
     plt.axis('equal')
 
-#linha ideal
+
     plt.plot([min_val - 0.5, max_val + 0.5],
              [min_val - 0.5, max_val + 0.5],
              'r--', lw=2, label='Ideal')
@@ -326,7 +255,7 @@ def main():
 
     print(f"\n Treinamento finalizado!")
     print(f" Arquivos salvos em: {args.out_dir}")
-    print(f" Best validation loss: {best_val:.4e}")
+ 
 
 
 
@@ -341,6 +270,9 @@ def main():
     print("A - Erro Medio Absoluto: ",np.mean(np.abs(all_true_exp1 - all_pred_exp1)))  
     print("A - Erro Quadratico Médio :",np.mean((all_true_exp1 - all_pred_exp1) ** 2))   
     print("A - Raiz Erro Quadratico Medio",np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2))) 
+
+    rmse_percentual = (np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2)) / np.mean(all_true_exp1)) * 100
+    print(f"RMSE percentual: {rmse_percentual}%")
 
     listaLimitaoes=[1,0.1,0.001,0.0001]
     
