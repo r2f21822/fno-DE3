@@ -273,6 +273,7 @@ def main():
 
 
     listaLimitaoes=[np.max(all_true),1,0.1,0.001,0.0001]
+    #oioi
     
     for limitacao in listaLimitaoes:
         mask = (all_true_exp1 >= 0) & (all_true_exp1 <= limitacao) & (all_pred_exp1 >= 0) & (all_pred_exp1 <= limitacao)
