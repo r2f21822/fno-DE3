@@ -37,7 +37,7 @@ Estrutura do projeto:
 └── README.md
 ```
 
-# Para treinar o modelo
+## Para treinar o modelo
 
 1. Gerar os dados 
 ```texto
