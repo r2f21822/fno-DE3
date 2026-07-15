@@ -1,5 +1,9 @@
 -/Amplitude_predictor
-	/linear_regression
+	
+   
+   
+   
+   /linear_regression
         comandos de execução no diretorio fno-DE3:
 
 		python amplitude_prediction/linear_regression/run_linear_regression.py
