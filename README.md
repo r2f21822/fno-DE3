@@ -34,10 +34,12 @@ pip install -e .
       grafico de relação entre log10(amplitude) e log10(Hp), log10(amplitued) e log10(Fp)
       
 ###scale
+
+
     - python scale/run_training_min_quad.py
-      treina com uma regressão linear (minimos quadraticos) (log(Hs), log(fp), log(gamma), (s))
-      desenha os graficos: "scale/results_scale_loggamma_s/amplitude_original_limitado_ateX.pdf" (10**log(true_A), 10**log(pred_A))
-      graficos limitados por tamanho de amostra e numero de X menores amostras
+          treina com uma regressão linear (minimos quadraticos) (log(Hs), log(fp), log(gamma), (s))
+          desenha os graficos: "scale/results_scale_loggamma_s/amplitude_original_limitado_ateX.pdf" (10**log(true_A), 10**log(pred_A))
+          graficos limitados por tamanho de amostra e numero de X menores amostras
       
     -python scale/plot_erro_percentual.py
       grafico do erro porcentual e erro percetaul absoluto por amostra ordenada
@@ -47,5 +49,5 @@ pip install -e .
 
         
 ###fno_and_a
-  - python fno_and_a/polar_plot_groundtruth_fno_and_scale.py --idx=X
+    - python fno_and_a/polar_plot_groundtruth_fno_and_scale.py --idx=X
       grafico por amostra X, juntando fno e escala pre-treinada
