@@ -58,7 +58,10 @@ pip install -e .
       grafico do erro porcentual e erro percetaul absoluto por amostra ordenada
       
     -python scale/metricas.py
-        MAE MSE, RMSE, MAPE do log(A) e A     
+        MAE MSE, RMSE, MAPE do log(A) e A
+        
+    - scale/results_scale
+        graficos das amplitudes A_pred e A_true
 
         
 ###fno_and_a
