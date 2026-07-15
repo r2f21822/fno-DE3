@@ -17,11 +17,7 @@ pip install -e .
 
 Generate_data 
   
-  -python /generate_snl_data.py \
-      --n-samples 5000 \
-      --n-f 128 \
-      --n-theta 64 \
-      --out data/snl/snl_dataset.h5
+  -python /generate_snl_data.py
       gera o dataset
     
     -python /plot_amplitude_histogram.py
@@ -37,6 +33,7 @@ scale
       treina com uma regressão linear (log(Hs), log(fp), log(gamma), (s))
       desenha os graficos: "scale/results_scale_loggamma_s/amplitude_original_limitado_ateX.pdf" (10**log(true_A), 10**log(pred_A))
       graficos limitados por tamanho de amostra e numero de X menores amostras
+    
   - python scale/plot_erro_percentual.py
       grafico do erro porcentual por amostra ordenada
   
