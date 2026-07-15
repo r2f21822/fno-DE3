@@ -18,7 +18,10 @@ pip install -e .
 
 
 ###Generate_data 
-    -python /generate_snl_data.py
+
+
+
+    -python  /generate_snl_data.py
       gera o dataset
     
     -python /plot_amplitude_histogram.py
