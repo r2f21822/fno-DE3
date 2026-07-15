@@ -15,7 +15,7 @@ pip install -r requirements.txt
 pip install -e .
 
 
-Generate_data
+Generate_data 
   
   -python /generate_snl_data.py \
       --n-samples 5000 \
