@@ -216,7 +216,7 @@ def main():
     print("log(A) - Erro Quadratico Médio :",np.mean((all_true - all_pred) ** 2))   
     print("log(A) - Raiz Erro Quadratico Medio",np.sqrt(np.mean((all_true - all_pred) ** 2)))                         # Raiz do erro Quadrático medio
 
-        # Grafico com exponenciacao base 10
+        # Grafico com exponenciacao base 10  oo
     all_true_exp1 = 10 ** all_true
     all_pred_exp1 = 10 ** all_pred
     r2score = R2Score()
