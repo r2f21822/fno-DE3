@@ -12,9 +12,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
-from torch.utils.data import DataLoader, TensorDataset
-from torch.optim import Adam
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torchmetrics.regression import R2Score
 
 
 DATA_PATH = "Generate_data/snl_data/snl_dataset.h5"
@@ -250,7 +248,7 @@ def main():
     plt.close()
     print(f"Scatter salvo em: {os.path.join(args.out_dir, 'amplitude_emLog_loggamma_s.pdf')}")
 
-    print(f"\n Treinamento finalizado!")
+    print(f"\n Treinamento finalizado")
     print(f" Arquivos salvos em: {args.out_dir}")
  
 
@@ -267,9 +265,8 @@ def main():
     print("A - Erro Medio Absoluto: ",np.mean(np.abs(all_true_exp1 - all_pred_exp1)))  
     print("A - Erro Quadratico Médio :",np.mean((all_true_exp1 - all_pred_exp1) ** 2))   
     print("A - Raiz Erro Quadratico Medio",np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2))) 
+    print("A - R2: ",r2score(all_pred_exp1,all_true_exp1 )) 
 
-    rmse_percentual = (np.sqrt(np.mean((all_true_exp1 - all_pred_exp1) ** 2)) / np.mean(all_true_exp1)) * 100
-    print(f"RMSE percentual: {rmse_percentual}%")
 
 
     listaLimitaoes=[np.max(all_true),1,0.1,0.001,0.0001]
