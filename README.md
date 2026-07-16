@@ -7,8 +7,8 @@ Estrutura do projeto:
 │ ├── fno_and_a/
 │ │ ├──
 │ │ └── README.md
-│ └── fno_diffusion
-│ ├──
+│ ├── fno_diffusion
+│ │
 │ └── README.md
 │
 ├── amplitude_prediction/
@@ -17,6 +17,7 @@ Estrutura do projeto:
 │ │ ├── metricas.py
 │ │ ├── plot_erro_por_amostra.py
 │ │ ├── plot_erro_percentual.py
+│ │ ├── plot_linear_regression_zoomed.py
 │ │ ├── figures/
 │ │ ├── results/
 │ │ └── README.md
@@ -89,3 +90,11 @@ Estrutura do projeto:
   python amplitude_prediction/linear_regression/metricas.py
   ```
    métricas de erro (MAE, MSE, RMSE, MAPE) para todas as amostras e separadamente para amplitudes abaixo e acima da mediana, além das médias e medianas dos valores reais e preditos
+
+
+### 4. Zoom nos gráficos de amplitude em escala original
+```texto
+python amplitude_prediction/linear_regression/plot_linear_regression_zoomed.py
+   ```
+gera graficos da amplitude original vs a predita (em escala normal) limitados até determinados tamanhos de amplitide e quantidade de amostras
+
