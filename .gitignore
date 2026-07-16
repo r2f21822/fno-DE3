@@ -1,5 +1,21 @@
-"venv/" 
-"__pycache__/" 
-"*.pyc" 
-"*.h5"
-"fno_diffusion.egg-info/"
+# Virtual environment
+venv/
+venvv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Data files (large)
+*.h5
+
+# Model files
+*.pth
+*.pt
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
