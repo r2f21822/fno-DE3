@@ -61,7 +61,7 @@ def metricas(results_dir,modelo_dir):
 
     ax1.set_xlabel("Amplitude Real", fontsize=12)
     ax1.set_ylabel("Erro Percentual  (%)", fontsize=12)
-    ax1.set_title(f'Erro Percentual por Amostra\n{len(all_true_exp)} amostras', fontsize=13)
+    ax1.set_title(f'Erro Percentual por Amostra\n{len(all_true_exp)} amostras de validação', fontsize=13)
     ax1.grid(True, alpha=0.3)
     ax1.legend(loc='best')
 
@@ -100,7 +100,7 @@ def metricas(results_dir,modelo_dir):
 
     ax2.set_xlabel("Amplitude Real", fontsize=12)
     ax2.set_ylabel("Erro Percentual Absoluto (%)", fontsize=12)
-    ax2.set_title(f'Erro Percentual Absoluto por Amostra\n{len(all_true_exp)} amostras', fontsize=13)
+    ax2.set_title(f'Erro Percentual Absoluto por Amostra\n{len(all_true_exp)} amostras de validação', fontsize=13)
     ax2.grid(True, alpha=0.3)
     ax2.legend(loc='best')
 

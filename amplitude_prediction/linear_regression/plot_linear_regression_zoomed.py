@@ -44,7 +44,7 @@ def plot_linear_regression(results_dir,modelo_dir):
 
         plt.xlabel('Amplitude Real (10^x)')
         plt.ylabel('Amplitude Predita (10^x)')
-        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras')
+        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras de validação')
         plt.legend()
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
@@ -93,7 +93,7 @@ def plot_linear_regression(results_dir,modelo_dir):
 
         plt.xlabel('Amplitude Real (10^x)')
         plt.ylabel('Amplitude Predita (10^x)')
-        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras')
+        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras de validação')
         plt.legend()
         plt.grid(True, alpha=0.3)
         plt.tight_layout()

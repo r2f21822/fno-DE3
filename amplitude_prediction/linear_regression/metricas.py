@@ -9,7 +9,7 @@ def metricas(results_dir):
     
     all_pred = np.load(os.path.join(results_dir, "all_pred.npy"))
     all_true = np.load(os.path.join(results_dir, "all_true.npy"))
-   
+
     
   
     all_pred_exp = 10 ** all_pred
@@ -26,7 +26,6 @@ def metricas(results_dir):
     print(f"log (A): MAE  (Erro Absoluto Médio):              {mae:.6f}")
     print(f"log (A): MSE  (Erro Quadrático Médio):            {mse:.6f}")
     print(f"log (A): RMSE (Raiz do Erro Quadrático Médio):    {rmse:.6f}")
-    print(f"log (A): MAPE (Erro Percentual Absoluto Médio):   {mape:.2f}%")
    
 
 
@@ -83,6 +82,7 @@ def metricas(results_dir):
     print(f"  Faixa de amplitude:        {true_menor.min():.6f} a {true_menor.max():.6f}")
     print(f"  MAE  (Erro Absoluto Médio):        {mae_menor:.6f}")
     print(f"  RMSE (Raiz do Erro Quadrático):    {rmse_menor:.6f}")
+    print(f"  MAPE (Erro Percentual Médio):      {mape_menor:.2f}%")
 
 
     # METADE MAIOR (amplitudes > mediana)

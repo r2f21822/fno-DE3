@@ -106,8 +106,11 @@ def main():
 
     mae_log = mean_absolute_error(y_val, all_pred)
     rmse_log = np.sqrt(mean_squared_error(y_val, all_pred))
+    r2_log = r2_score(y_val, all_pred)
+    
     print(f"\nlog(A) - MAE: {mae_log:.6f}")
     print(f"log(A) - RMSE: {rmse_log:.6f}")
+    print(f"log(A) - R²: {r2_log:.6f}")
     
 
     y_val_exp = 10 ** y_val
@@ -129,16 +132,39 @@ def main():
 
     print(f"Previsões salvas em: {args.out_dir}")
 
+
+    #para utilizar como dados nos grafico
     model_params = {
         'coef_': torch.tensor(model.coef_, dtype=torch.float32),
         'intercept_': torch.tensor(model.intercept_, dtype=torch.float32),
         'feature_names': ['log10(Hs)', 'log10(fp)', 'log10(gamma)', 's'],
         'model_type': 'LinearRegression',
         'n_features': X_train.shape[1],
+        
     }
+    
+
     torch.save(model_params, os.path.join(args.out_dir, 'amplitude_model_params.pth'))
     print(f"Parâmetros .pth salvos: {os.path.join(args.out_dir, 'amplitude_model_params.pth')}")
 
+    #para utilizar em um yamal para poder visualizar os resultados, futuramente juntar ambos e modificar os ourtros arquivos afetadps 
+    results = {
+    'coefficients': {
+        'intercept': model.intercept_,
+        'log10_hs': model.coef_[0],
+        'log10_fp': model.coef_[1],
+        'log10_gamma': model.coef_[2],
+        's': model.coef_[3],
+    },
+    'metrics': {
+        'r2': r2_log,
+        'mae': mae_log,
+        'rmse': rmse_log,
+    }
+    }
+    
+    with open(os.path.join(RUN_DIR, "amplitude_model_metrics.yaml"), "w") as f:
+        yaml.dump(results, f, default_flow_style=False)
 
     #grafico de log(A)
 
@@ -159,7 +185,7 @@ def main():
 
     plt.xlabel('log(Amplitude Real)')
     plt.ylabel('log(Amplitude Predita)')
-    plt.title(f'Real vs Predito - {len(y_val)} amostras')
+    plt.title(f'Real vs Predito - {len(y_val)} amostras de validação')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
@@ -215,7 +241,7 @@ def main():
 
     plt.xlabel('log(Amplitude Real)')
     plt.ylabel('log(Amplitude Predita)')
-    plt.title(f'Real vs Predito - {len(y_val)} amostras')
+    plt.title(f'Real vs Predito - {len(y_val)} amostras de validação')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()

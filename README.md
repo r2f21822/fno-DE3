@@ -99,3 +99,14 @@ python amplitude_prediction/linear_regression/plot_linear_regression_zoomed.py
    ```
 gera graficos da amplitude original vs a predita (em escala normal) limitados até determinados tamanhos de amplitide e quantidade de amostras
 
+## 5. Treinar FNO
+```texto
+python shape_prediction/run_training_fno.py
+   ```
+treina o modelo FNO normalizado
+
+## 6. Gráfico por amostra do modelo FNO e amplitude
+```texto
+python shape_prediction/polar_plot_groundtruth_fno_and_scale.py
+   ```
+gráficos por amostra do fno e amplitude pré-treinados
