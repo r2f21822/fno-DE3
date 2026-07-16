@@ -36,6 +36,8 @@ python amplitude_prediction/linear_regression/plot_erro_por_amostra.py
    ```
 parametros modificaveis:
 --dir_out (diretório de saida com as figuras, default="amplitude_prediction/linear_regression/figures")
+
+
 --dir_modelo (Diretório de entrada com o modelo, default="amplitude_prediction/linear_regression/results")
 
 ```texto
@@ -43,6 +45,9 @@ python amplitude_prediction/linear_regression/plot_erro_percentual.py
    ```
 parametros modificaveis:
 --dir_out (diretório de saida com as figuras, default="amplitude_prediction/linear_regression/figures")
+
+
+
 --dir_modelo (Diretório de entrada com o modelo, default="amplitude_prediction/linear_regression/results")
 
 
@@ -52,6 +57,9 @@ python amplitude_prediction/linear_regression/plot_linear_regression_zoomed.py
 gera graficos da amplitude original vs a predita (em escala normal) limitados até determinados tamanhos de amplitide e quantidade de amostras
 parametros modificaveis:
 --out_dir_figs (diretório de saida com as figuras, default="amplitude_prediction/linear_regression/figures")
+
+
+
 --dir_modelo (Diretório de entrada com o modelo, default="amplitude_prediction/linear_regression/results")
 
 ### 3. Metricas no terminal
