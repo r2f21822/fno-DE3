@@ -54,7 +54,7 @@ def plot_linear_regression(results_dir,modelo_dir):
 
         plt.savefig(os.path.join(args.out_dir_figs, nome_grafico_limitado), dpi=150, bbox_inches='tight')
         plt.close()
-        print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
+        print(f"grafico limitado (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
 
 
     
@@ -103,7 +103,7 @@ def plot_linear_regression(results_dir,modelo_dir):
 
         plt.savefig(os.path.join(args.out_dir_figs, nome_grafico_limitado), dpi=150, bbox_inches='tight')
         plt.close()
-        print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
+        print(f"grafico limitado (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

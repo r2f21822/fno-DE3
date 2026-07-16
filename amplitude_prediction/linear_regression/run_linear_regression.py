@@ -93,24 +93,12 @@ def main():
     model = LinearRegression()
     model.fit(X_train, y_train)
     
-
-    print("Coeficientes encontrados:")
-    print(f"  w1 = {model.coef_[0]:.6f}  (log(Hs))")
-    print(f"  w2 = {model.coef_[1]:.6f}  (log(fp))")
-    print(f"  w3 = {model.coef_[2]:.6f}  (log(gamma))")
-    print(f"  w4 = {model.coef_[3]:.6f}  (s)")
-    print(f"  b  = {model.intercept_:.6f}")
-    
  
     all_pred = model.predict(X_val)
 
     mae_log = mean_absolute_error(y_val, all_pred)
     rmse_log = np.sqrt(mean_squared_error(y_val, all_pred))
     r2_log = r2_score(y_val, all_pred)
-    
-    print(f"\nlog(A) - MAE: {mae_log:.6f}")
-    print(f"log(A) - RMSE: {rmse_log:.6f}")
-    print(f"log(A) - R²: {r2_log:.6f}")
     
 
     y_val_exp = 10 ** y_val
@@ -119,11 +107,7 @@ def main():
     mae = mean_absolute_error(y_val_exp, all_pred_exp)
     rmse = np.sqrt(mean_squared_error(y_val_exp, all_pred_exp))
     r2 = r2_score(y_val_exp, all_pred_exp)
-    
-    print(f"\nA - MAE: {mae:.6f}")
-    print(f"A - RMSE: {rmse:.6f}")
-    print(f"A - R²: {r2:.6f}")
-    
+  
     # Salvar resultados
     os.makedirs(RUN_DIR, exist_ok=True)
     np.save(os.path.join(RUN_DIR, "all_pred.npy"), all_pred)
@@ -149,22 +133,23 @@ def main():
 
     #para utilizar em um yamal para poder visualizar os resultados, futuramente juntar ambos e modificar os ourtros arquivos afetadps 
     results = {
-    'coefficients': {
-        'intercept': model.intercept_,
-        'log10_hs': model.coef_[0],
-        'log10_fp': model.coef_[1],
-        'log10_gamma': model.coef_[2],
-        's': model.coef_[3],
-    },
-    'metrics': {
-        'r2': r2_log,
-        'mae': mae_log,
-        'rmse': rmse_log,
+        'coefficients': {
+            'intercept': float(model.intercept_),           
+            'log10_hs': float(model.coef_[0]),            
+            'log10_fp': float(model.coef_[1]),             
+            'log10_gamma': float(model.coef_[2]),          
+            's': float(model.coef_[3]),                    
+        },
+        'metrics': {
+            'r2': float(r2),                     
+            'mae': float(mae),                   
+            'rmse': float(rmse),                
+        }
     }
-    }
+
     
     with open(os.path.join(RUN_DIR, "amplitude_model_metrics.yaml"), "w") as f:
-        yaml.dump(results, f, default_flow_style=False)
+        yaml.dump(results, f, default_flow_style=False,sort_keys=False)
 
     #grafico de log(A)
 
@@ -191,10 +176,19 @@ def main():
     plt.tight_layout()
     plt.savefig(os.path.join(args.out_dir_figs, "amplitude__logtrue_vs_logpred.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Scatter salvo em: {os.path.join(args.out_dir_figs, 'amplitude_emLog_loggamma_s.pdf')}")
+    print(f"grafico log(A_true) vs log(A_pred) salvo em: {os.path.join(args.out_dir_figs, 'amplitude__logtrue_vs_logpred.pdf')}")
 
     print(f"\n Treinamento finalizado")
     print(f" Arquivos salvos em: {args.out_dir}")
+
+
+    print("Coeficientes encontrados:")
+    print(f"  w1 = {model.coef_[0]:.6f}  (log(Hs))")
+    print(f"  w2 = {model.coef_[1]:.6f}  (log(fp))")
+    print(f"  w3 = {model.coef_[2]:.6f}  (log(gamma))")
+    print(f"  w4 = {model.coef_[3]:.6f}  (s)")
+    print(f"  b  = {model.intercept_:.6f}")
+    
 
     print("\n" + "="*60)
     print("MÉTRICAS EM log10(A)")
@@ -205,6 +199,7 @@ def main():
     print(f" log(A) MAE:  {mae_log:.6f}")
     print(f" log(A) MSE:  {mse_log:.6f}")
     print(f" log(A) RMSE: {rmse_log:.6f}")
+    print(f"log(A)  R²:   {r2_log:.6f}")
 
 
     y_val_exp = 10 ** y_val
@@ -247,7 +242,7 @@ def main():
     plt.tight_layout()
     plt.savefig(os.path.join(args.out_dir_figs, "amplitude_original_true_vs_pred.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"Scatter salvo em: {os.path.join(args.out_dir_figs, 'amplitude_emLog_loggamma_s.pdf')}")
+    print(f"grafico de amplitude_rel vs amplitude_predita salvo em: {os.path.join(args.out_dir_figs, 'amplitude_original_true_vs_pred.pdf')}")
 
   
 
