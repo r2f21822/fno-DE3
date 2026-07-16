@@ -23,7 +23,7 @@ comandos de execução no diretorio fno-DE3:
 ```texto
 python amplitude_prediction/linear_regression/run_linear_regression.py
    ```
-treina um modelo de regressão linear para prever o log10 da amplitude. Gera dois graficos, um de log10(amplitude_predita) vs log10(amplitude real) e um amplitude_predita vs amplitude_real, além de um arquivo .yaml com os coeficientes mae, rsm, r3 do modelo
+treina um modelo de regressão linear para prever o log10 da amplitude. Gera dois graficos, um de log10(amplitude_predita) vs log10(amplitude real) e um amplitude_predita vs amplitude_real, além de um arquivo .yaml com os coeficientes mae, rsm, r2 do modelo
 parametros modificaveis:
 
 
