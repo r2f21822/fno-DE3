@@ -214,7 +214,7 @@ def main():
     pa.add_argument("--model", default="shape_prediction/results/model_best.pth", help="Caminho do modelo FNO")
 
     #incompleto
-    pa.add_argument("--amplitude-model", default="amplitude_prediction/linear_regression/amplitude_model_params.pth", help="Caminho do modelo de amplitude")
+    pa.add_argument("--amplitude-model", default="amplitude_prediction/linear_regression/results/amplitude_model_params.pth", help="Caminho do modelo de amplitude")
     pa.add_argument("--out-dir", default="shape_prediction/figures")
     pa.add_argument("--n-modes", type=int, nargs=2, default=[16, 16])
     pa.add_argument("--hidden-channels", type=int, default=64)
