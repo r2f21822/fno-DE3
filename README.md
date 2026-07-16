@@ -4,11 +4,11 @@
 Estrutura do projeto:
 ```texto
 ├── shape_prediction/
-│ ├── fno_and_a/
-│ │ ├──
-│ │ └── README.md
-│ ├── fno_diffusion
-│ │
+│ ├── fno_diffusion/
+│ ├── run_training_fno.py
+│ ├── polar_plot_groundtruth_fno_and_scale.py
+│ ├── results/
+│ ├── figures/
 │ └── README.md
 │
 ├── amplitude_prediction/
@@ -23,7 +23,6 @@ Estrutura do projeto:
 │ │ └── README.md
 │ │
 │ └── mlp/
-│
 │
 ├── Generate_data/
 │ ├── generate_snl_data.py
@@ -61,7 +60,7 @@ Estrutura do projeto:
   pip install --upgrade pip
   pip install -r requirements.txt
   ```
-### 4. Instalar pacotes
+### 4. Instalar pacotes 
   ```texto
   pip install -e .
   ```
