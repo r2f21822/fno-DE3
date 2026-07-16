@@ -42,7 +42,9 @@ Estrutura do projeto:
 ```texto
   git clone https://github.com/r2f21822/fno-DE3.git
   ```
-
+```texto
+  cd fno-DE3
+  ```
 ### 2. Ambiente virtual
 ```texto
   python -m venv venv
