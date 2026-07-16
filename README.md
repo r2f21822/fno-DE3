@@ -37,13 +37,55 @@ Estrutura do projeto:
 └── README.md
 ```
 
-## Para treinar o modelo
+## Clonar repositorio
+1. Clonar
+```texto
+  git clone https://github.com/r2f21822/fno-DE3.git
+  ```
+
+2. Ambiente virtual
+```texto
+  python -m venv venv
+  ```
+  Linux
+  ```texto
+  source venv/bin/activate
+  ```
+  Windows
+  ```texto
+  venv\Scripts\activate
+  ```
+3. Instalar depencias 
+  ```texto
+  pip install --upgrade pip
+  pip install -r requirements.txt
+  ```
+4. Instalar pacotes
+  ```texto
+  pip install -e .
+  ```
+
+
+## Para treinar o modelo de previsão de amplitude
 
 1. Gerar os dados 
 ```texto
   python Generate_data/generate_snl_data.py --n-sample 5000
   ```
+  Snl calculado utilizando o modelo DE3. Dataset sintético baseado em espectros JONSWAP bidimensionais, sob condições oceânicas realistas de altura significativa ​entre 1 e 6 metros e período de pico entre 5 e 15 segundos.
+
 2. Regressão linear de log(A)
 ```texto
   python amplitude_prediction/linear_regression/run_linear_regression.py
   ```
+  Treina um modelo de regressão linear para prever a amplitude das amostras separadamente. Preve primeiramente o log10(amplitude), mas gera os grafico também na forma normal
+
+3. Metricas e graficos de erro
+```texto
+  python amplitude_prediction/linear_regression/plot_erro_percentual.py
+  ```
+  graficos dos erros percentuais de cada amostra, ordenadas por amplitude
+  ```texto
+  python amplitude_prediction/linear_regression/metricas.py
+  ```
+   métricas de erro (MAE, MSE, RMSE, MAPE) para todas as amostras e separadamente para amplitudes abaixo e acima da mediana, além das médias e medianas dos valores reais e preditos
