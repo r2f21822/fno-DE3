@@ -129,6 +129,16 @@ def main():
 
     print(f"Previsões salvas em: {args.out_dir}")
 
+    model_params = {
+        'coef_': torch.tensor(model.coef_, dtype=torch.float32),
+        'intercept_': torch.tensor(model.intercept_, dtype=torch.float32),
+        'feature_names': ['log10(Hs)', 'log10(fp)', 'log10(gamma)', 's'],
+        'model_type': 'LinearRegression',
+        'n_features': X_train.shape[1],
+    }
+    torch.save(model_params, os.path.join(args.out_dir, 'amplitude_model_params.pth'))
+    print(f"Parâmetros .pth salvos: {os.path.join(args.out_dir, 'amplitude_model_params.pth')}")
+
 
     #grafico de log(A)
 
