@@ -8,7 +8,7 @@
 │ ├── plot_loga_logHs_logFp
 │ ├── snl_physics.py
 │ ├── snl/
-│ ├── results/
+│ ├── figures/
 │ └── README.md
 │
 └── README.md
@@ -22,11 +22,17 @@ comandos de execução no diretorio fno-DE3:
   python Generate_data/generate_snl_data.py --n-sample 5000
    ```
 --n-samples (Número total de amostras, default=1000)
+
 --n-f	(Resolução de frequência (recomendada potência de 2), default=128)
+
 --n-theta	(Resolução direcional, default=64)
+
 --f-min	(Frequência mínima (Hz), default= 0,04)
+
 --f-max	(Frequência máxima (Hz), default=1.0)
+
 --seed	(Semente aleatória, default=42)
+
 --out	(Caminho de saída, default="data/snl/snl_dataset.h5")
 
 
