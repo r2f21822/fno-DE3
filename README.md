@@ -74,13 +74,13 @@ Estrutura do projeto:
 ```texto
   python Generate_data/generate_snl_data.py --n-sample 5000
   ```
-  Snl calculado utilizando o modelo DE3. Dataset sintético baseado em espectros JONSWAP bidimensionais, sob condições oceânicas realistas de altura significativa ​entre 1 e 6 metros e período de pico entre 5 e 15 segundos.
+  Snl calculado utilizando o modelo DE3. Dataset sintético baseado em espectros JONSWAP bidimensionais, sob condições oceânicas realistas de altura significativa ​entre 1 e 6 metros e período de pico entre 5 e 15 segundos. Configurções adicionais em Generate_data/README.md
 
 ### 2. Regressão linear de log(A)
 ```texto
   python amplitude_prediction/linear_regression/run_linear_regression.py
   ```
-  Treina um modelo de regressão linear para prever a amplitude das amostras separadamente. Preve primeiramente o log10(amplitude), mas gera os grafico também na forma normal
+  Treina um modelo de regressão linear para prever a amplitude das amostras separadamente. Preve primeiramente o log10(amplitude), mas gera os grafico também na forma normal. Configurções adicionais em amplitude_prediction/README.md
 
 ### 3. Metricas e graficos de erro
 ```texto
@@ -99,13 +99,13 @@ python amplitude_prediction/linear_regression/plot_linear_regression_zoomed.py
    ```
 gera graficos da amplitude original vs a predita (em escala normal) limitados até determinados tamanhos de amplitide e quantidade de amostras
 
-## 5. Treinar FNO
+### 5. Treinar FNO
 ```texto
 python shape_prediction/run_training_fno.py
    ```
-treina o modelo FNO normalizado
+treina o modelo FNO normalizado. Configurções adicionais em shape_prediction/README.md
 
-## 6. Gráfico por amostra do modelo FNO e amplitude
+### 6. Gráfico por amostra do modelo FNO e amplitude
 ```texto
 python shape_prediction/polar_plot_groundtruth_fno_and_scale.py
    ```
