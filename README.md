@@ -3,17 +3,17 @@
 
 Estrutura do projeto:
 ```texto
-├── shape_prediction/
+├── shape_prediction/                             # forma do modelo (normalizado) utilizando um FNO
 │ ├── fno_diffusion/
-│ ├── run_training_fno.py
+│ ├── run_training_fno.py                         # treina o FNO
 │ ├── polar_plot_groundtruth_fno_and_scale.py
 │ ├── results/
 │ ├── figures/
 │ └── README.md
 │
-├── amplitude_prediction/
+├── amplitude_prediction/                         # preve apenas a amplitude das amostras
 │ ├── linear_regression/
-│ │ ├── run_linear_regression.py
+│ │ ├── run_linear_regression.py                  # treina o modelo de regressão
 │ │ ├── metricas.py
 │ │ ├── plot_erro_por_amostra.py
 │ │ ├── plot_erro_percentual.py
@@ -24,8 +24,8 @@ Estrutura do projeto:
 │ │
 │ └── mlp/
 │
-├── Generate_data/
-│ ├── generate_snl_data.py
+├── Generate_data/                                 # geração e analise o dataset sintético 
+│ ├── generate_snl_data.py                         # gera o dataset
 │ ├── plt_amplitude_histograma.py
 │ ├── plot_gamma.s.py
 │ ├── plot_loga_logHs_logFp
