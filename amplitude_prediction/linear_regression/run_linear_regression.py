@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
 RUN_DIR = "amplitude_prediction/linear_regression/results"
 #depois retirar daqui e colocar em outra pasta
-FIG_DIR ="amplitude_prediction/linear_regression/figures/out"
+FIG_DIR ="amplitude_prediction/linear_regression/figures"
 EPS = 1e-8
 
 
@@ -163,7 +163,7 @@ def main():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir_figs, "amplitude_emLog_loggamma_s.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir_figs, "amplitude__logtrue_vs_logpred.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
     print(f"Scatter salvo em: {os.path.join(args.out_dir_figs, 'amplitude_emLog_loggamma_s.pdf')}")
 
@@ -197,99 +197,37 @@ def main():
     print(f" A R2:   {r2:.6f}")
     print("="*60)
 
-    
+
+    min_val = min( y_val_exp.min(), all_pred_exp.min())
+    max_val = max(y_val_exp.max(), all_pred_exp.max())
+
+    plt.figure(figsize=(6, 5))
+    plt.scatter(y_val_exp, all_pred_exp, alpha=0.3, s=5)
+
+    plt.xlim(min_val - 0.5, max_val + 0.5)
+    plt.ylim(min_val - 0.5, max_val + 0.5)
+    plt.axis('equal')
+
+
+    plt.plot([min_val - 0.5, max_val + 0.5],
+             [min_val - 0.5, max_val + 0.5],
+             'r--', lw=2, label='Ideal')
+
+    plt.xlabel('log(Amplitude Real)')
+    plt.ylabel('log(Amplitude Predita)')
+    plt.title(f'Real vs Predito - {len(y_val)} amostras')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(args.out_dir_figs, "amplitude_original_true_vs_pred.pdf"), dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Scatter salvo em: {os.path.join(args.out_dir_figs, 'amplitude_emLog_loggamma_s.pdf')}")
+
+  
 
 
 
 
-
-
-
-    listaLimitaoes=[np.max(y_val_exp),1,0.1,0.001,0.0001]
-    
-    for limitacao in listaLimitaoes:
-        mask = (y_val_exp >= 0) & (y_val_exp <= limitacao) & (all_pred_exp >= 0) & (all_pred_exp <= limitacao)
-        y_val_exp_filtrado = y_val_exp[mask]
-        all_pred_exp_filtrado = all_pred_exp[mask]
-
-        min_val_exp = min(y_val_exp_filtrado.min(), all_pred_exp_filtrado.min())
-        max_val_exp = max(y_val_exp_filtrado.max(), all_pred_exp_filtrado.max())
-
-        plt.figure(figsize=(6, 5))
-        plt.scatter(y_val_exp_filtrado, all_pred_exp_filtrado, alpha=0.3, s=5)
-
-        plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-        plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-        plt.axis('equal')
-
-        plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-                [min_val_exp * 0.9, max_val_exp * 1.1],
-                'r--', lw=2, label='Ideal')
-
-        plt.xlabel('Amplitude Real (10^x)')
-        plt.ylabel('Amplitude Predita (10^x)')
-        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        plt.tight_layout()
-
-
-        nome_grafico_limitado = "amplitude_original_limitado_ate" + str(limitacao) + ".pdf"
-
-        plt.savefig(os.path.join(args.out_dir_figs, nome_grafico_limitado), dpi=150, bbox_inches='tight')
-        plt.close()
-        print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
-
-
-    
-    num_amostras=len(y_val_exp)
-    listaLimitaoesPorAmostra = [
-        int(num_amostras),           
-        int(num_amostras * 0.75),    
-        int(num_amostras // 2),      
-        int(num_amostras // 4)       
-    ]
-    
-    for min_amostras in listaLimitaoesPorAmostra:
-        
-        valores_ordenados = np.sort(y_val_exp)
-    
-        limite_amplitude = valores_ordenados[min_amostras - 1]
-
-        mask = (y_val_exp >= 0) & (y_val_exp <= limite_amplitude) & (all_pred_exp >= 0) & (all_pred_exp <= limite_amplitude)
-        y_val_exp_filtrado = y_val_exp[mask]
-        all_pred_exp_filtrado = all_pred_exp[mask]
-
-        min_val_exp = min(y_val_exp_filtrado.min(), all_pred_exp_filtrado.min())
-        max_val_exp = max(y_val_exp_filtrado.max(), all_pred_exp_filtrado.max())
-
-        plt.figure(figsize=(6, 5))
-        plt.scatter(y_val_exp_filtrado, all_pred_exp_filtrado, alpha=0.3, s=5)
-
-        plt.xlim(min_val_exp * 0.9, max_val_exp * 1.1)
-        plt.ylim(min_val_exp * 0.9, max_val_exp * 1.1)
-
-        plt.axis('equal')
-
-        plt.plot([min_val_exp * 0.9, max_val_exp * 1.1],
-                [min_val_exp * 0.9, max_val_exp * 1.1],
-                'r--', lw=2, label='Ideal')
-
-        plt.xlabel('Amplitude Real (10^x)')
-        plt.ylabel('Amplitude Predita (10^x)')
-        plt.title(f'Real vs Predito (escala original) - {len(y_val_exp_filtrado)} amostras')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        plt.tight_layout()
-
-
-        nome_grafico_limitado = "amplitude_original_limitado_ate" + str(min_amostras) + "amostras.pdf"
-
-        plt.savefig(os.path.join(args.out_dir_figs, nome_grafico_limitado), dpi=150, bbox_inches='tight')
-        plt.close()
-        print(f"Scatter (escala original) salvo em: {os.path.join(args.out_dir_figs, nome_grafico_limitado)}")
-        
 
 if __name__ == "__main__":
     main()

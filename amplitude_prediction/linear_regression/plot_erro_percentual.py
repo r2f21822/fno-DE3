@@ -7,7 +7,7 @@ import argparse
 
 MODELO_DIR = "amplitude_prediction/linear_regression/results"
 #onde vai ser salvo
-RUN_DIR="amplitude_prediction/linear_regression/figures/out"
+RUN_DIR="amplitude_prediction/linear_regression/figures"
 
 def metricas(results_dir,modelo_dir):
    
