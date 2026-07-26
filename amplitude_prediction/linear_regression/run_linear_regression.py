@@ -21,19 +21,27 @@ DATA_PATH = "Generate_data/snl/snl_dataset.h5"
 RUN_DIR = "amplitude_prediction/linear_regression/results"
 #depois retirar daqui e colocar em outra pasta
 FIG_DIR ="amplitude_prediction/linear_regression/figures"
-EPS = 1e-8
 
 
 
 
-def factorize_target(Y, eps=EPS):
+
+def factorize_target(Y):
     """
     Y: (N, 1, Nf, Ntheta)
     Retorna:
       a: max_abs(Y), shape (N, 1)
     """
-    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) + eps
+    #eve verificar se a[i] e finito e maior que zero. Se aparecer uma amostra invalida, o programa deve parar e mostrar uma mensagem clara
+    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True)    
+    for i, val in enumerate(a.view(-1)):
+        #infinito ou nan
+        if not torch.isfinite(val):
+            raise ValueError(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
+        if val <= 0:
+            raise ValueError(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
     return a.view(-1, 1)
+
 
 
 def load_hs_fp_dataset(path):
@@ -75,8 +83,8 @@ def main():
     
   
     X = np.column_stack([
-        np.log10(hs + EPS),
-        np.log10(fp + EPS),
+        np.log10(hs),
+        np.log10(fp),
         np.log10(gamma),
         s
     ])
