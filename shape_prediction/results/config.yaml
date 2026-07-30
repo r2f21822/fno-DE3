@@ -5,7 +5,7 @@ model:
   - 16
   hidden_channels: 64
 training:
-  epochs: 100
+  epochs: 3
   batch_size: 16
   learning_rate: 0.001
 data:

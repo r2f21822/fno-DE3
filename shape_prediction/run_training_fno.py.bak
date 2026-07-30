@@ -43,26 +43,9 @@ def normalize_per_sample(Y):
     Retorna Y_norm e o tensor de escalas (N, 1, 1, 1) para desnormalizar.
     """
     # max absoluto por amostra: shape (N, 1, 1, 1)
-    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True)
-    
-    
-    for i, val in enumerate(a.view(-1)):
-        #infinito ou nan
-        if not torch.isfinite(val):
-            print(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
-        if val <= 0:
-            print(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
-            
-    shape = Y / a
-    
-    for i in range(len(shape)):
-        max_abs = shape[i].abs().max().item()
-        if not (max_abs==1):
-            print(f"Amostra {i} inválida: max(abs(shape)) = {max_abs}, deveria ser 1")
-    return Y / a, a
+    scale = Y.abs().amax(dim=(1, 2, 3), keepdim=True)
+    return Y / scale, scale
  
-    
-    
  
 def denormalize_per_sample(Y_norm, scale):
     """Desfaz a normalização: Y = Y_norm * scale."""

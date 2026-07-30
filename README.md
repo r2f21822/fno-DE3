@@ -34,6 +34,10 @@ Estrutura do projeto:
 │ ├── results/
 │ └── README.md
 │
+├── shared_idx/ 
+│ ├── generate_shared_idx.py                       # gera os indices compartilhados
+│ ├── results/
+│ └── README.md
 └── README.md
 ```
 
@@ -76,13 +80,20 @@ Estrutura do projeto:
   ```
   Snl calculado utilizando o modelo DE3. Dataset sintético baseado em espectros JONSWAP bidimensionais, sob condições oceânicas realistas de altura significativa ​entre 1 e 6 metros e período de pico entre 5 e 15 segundos. Configurções adicionais em Generate_data/README.md
 
-### 2. Regressão linear de log(A)
+### 2. Gerar separação de treino e teste
+```texto
+  python shared_idx/generate_shared_idx
+  ```
+  Gera a separação de amostras em um conjunto de treino e teste baseado nos indices das amotras, necessario para que o modelo de previsão de amplitue e shape tenham o mesmo conjunto de teste e validação. Ou seja, caso queira modificar o tamanho do conjunto de treino, é necessario retornar a essa parte
+
+
+### 3. Regressão linear de log(A)
 ```texto
   python amplitude_prediction/linear_regression/run_linear_regression.py
   ```
   Treina um modelo de regressão linear para prever a amplitude das amostras separadamente. Preve primeiramente o log10(amplitude), mas gera os grafico também na forma normal. Configurções adicionais em amplitude_prediction/README.md
 
-### 3. Metricas e graficos de erro
+### 4. Metricas e graficos de erro
 ```texto
   python amplitude_prediction/linear_regression/plot_erro_percentual.py
   ```
@@ -93,19 +104,19 @@ Estrutura do projeto:
    métricas de erro (MAE, MSE, RMSE, MAPE) para todas as amostras e separadamente para amplitudes abaixo e acima da mediana, além das médias e medianas dos valores reais e preditos
 
 
-### 4. Zoom nos gráficos de amplitude em escala original
+### 5. Zoom nos gráficos de amplitude em escala original
 ```texto
 python amplitude_prediction/linear_regression/plot_linear_regression_zoomed.py
    ```
 gera graficos da amplitude original vs a predita (em escala normal) limitados até determinados tamanhos de amplitide e quantidade de amostras
 
-### 5. Treinar FNO
+### 6. Treinar FNO
 ```texto
 python shape_prediction/run_training_fno.py
    ```
 treina o modelo FNO normalizado. Configurções adicionais em shape_prediction/README.md
 
-### 6. Gráfico por amostra do modelo FNO e amplitude
+### 7. Gráfico por amostra do modelo FNO e amplitude
 ```texto
 python shape_prediction/polar_plot_groundtruth_fno_and_scale.py
    ```

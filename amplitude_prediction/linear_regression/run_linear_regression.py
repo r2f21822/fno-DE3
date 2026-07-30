@@ -22,9 +22,16 @@ RUN_DIR = "amplitude_prediction/linear_regression/results"
 #depois retirar daqui e colocar em outra pasta
 FIG_DIR ="amplitude_prediction/linear_regression/figures"
 
+IDX_DIR="shared_idx/results"
 
 
 
+def load_shared_idx(idx_dir=IDX_DIR):
+
+    train_idx = np.load(os.path.join(idx_dir, "train_indices.npy"))
+    val_idx = np.load(os.path.join(idx_dir, "val_indices.npy"))
+    
+    return train_idx, val_idx
 
 def factorize_target(Y):
     """
@@ -37,9 +44,18 @@ def factorize_target(Y):
     for i, val in enumerate(a.view(-1)):
         #infinito ou nan
         if not torch.isfinite(val):
-            raise ValueError(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
+            print(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
         if val <= 0:
-            raise ValueError(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
+            print(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
+            
+    shape = Y / a
+    
+    for i in range(len(shape)):
+        max_abs = shape[i].abs().max().item()
+        if not (max_abs==1):
+            print(f"Amostra {i} inválida: max(abs(shape)) = {max_abs}, deveria ser 1")
+    
+        
     return a.view(-1, 1)
 
 
@@ -59,7 +75,9 @@ def load_hs_fp_dataset(path):
     gamma = torch.tensor(gamma, dtype=torch.float32)
     Y = torch.tensor(Y, dtype=torch.float32).permute(0, 3, 1, 2)
     
-    return Hs, fp,Y, gamma,s
+    tam_Y=len(Y)
+    
+    return Hs, fp,Y, gamma,s, tam_Y
 
 
 
@@ -68,7 +86,8 @@ def main():
     pa.add_argument("--h5file", default=DATA_PATH)
     pa.add_argument("--out-dir", default=RUN_DIR)
     pa.add_argument("--out-dir_figs", default=FIG_DIR)
-    pa.add_argument("--seed", type=int, default=42)
+    pa.add_argument("--idx_dir", default=IDX_DIR)
+
     args = pa.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
@@ -76,10 +95,12 @@ def main():
 
 
 
-    hs, fp, Y, gamma, s = load_hs_fp_dataset(args.h5file)
+    hs, fp, Y, gamma, s,tam_Y = load_hs_fp_dataset(args.h5file)
     
     a = factorize_target(Y)
     a_log = np.log10(a)
+    
+    indices = np.arange(tam_Y)
     
   
     X = np.column_stack([
@@ -89,13 +110,14 @@ def main():
         s
     ])
     
-   
-    X_train, X_val, y_train, y_val = train_test_split(
-        X, a_log, test_size=0.2, random_state=42
-    )
 
-    y_train = np.array(y_train).flatten()  
-    y_val = np.array(y_val).flatten()
+
+    train_idx, val_idx=load_shared_idx(args.idx_dir)
+    
+    X_train = X[train_idx]
+    X_val = X[val_idx]
+    y_train = a_log[train_idx].flatten()
+    y_val = a_log[val_idx].flatten()
     
 
     model = LinearRegression()
@@ -105,6 +127,7 @@ def main():
     all_pred = model.predict(X_val)
 
     mae_log = mean_absolute_error(y_val, all_pred)
+    mse_log=mean_squared_error(y_val, all_pred)
     rmse_log = np.sqrt(mean_squared_error(y_val, all_pred))
     r2_log = r2_score(y_val, all_pred)
     
@@ -112,9 +135,12 @@ def main():
     y_val_exp = 10 ** y_val
     all_pred_exp = 10 ** all_pred
     
-    mae = mean_absolute_error(y_val_exp, all_pred_exp)
-    rmse = np.sqrt(mean_squared_error(y_val_exp, all_pred_exp))
-    r2 = r2_score(y_val_exp, all_pred_exp)
+    mae_original = mean_absolute_error(y_val_exp, all_pred_exp)
+    mse_original= mean_squared_error(y_val_exp, all_pred_exp)
+    rmse_original = np.sqrt(mean_squared_error(y_val_exp, all_pred_exp))
+    r2_original = r2_score(y_val_exp, all_pred_exp)
+    
+    
   
     # Salvar resultados
     os.makedirs(RUN_DIR, exist_ok=True)
@@ -149,15 +175,38 @@ def main():
             's': float(model.coef_[3]),                    
         },
         'metrics': {
-            'r2': float(r2),                     
-            'mae': float(mae),                   
-            'rmse': float(rmse),                
+            'MAE (escala original)': float(mae_original), 
+            'MSE (escala original)': float(mse_original), 
+            'RMSE (escala original)': float(rmse_original),            
+            'R2 (escala original)': float(r2_original),
+            'MAE (escala log)': float(mae_log), 
+            'MSE (escala original)': float(mse_original), 
+            'RMSE (escala log)': float(rmse_log),            
+            'R2 (escala log)': float(r2_log),                            
+
         }
     }
-
+    
+    
+  
+    config_treino={
+    'Configuracao do conjunto de amostras':{
+            'Tamanho do conjunto de amostras total': int(len(Y)),
+            'Tamanho do conjunto de treino': int(len(X_train)),
+            'Tamanho do conjunto de validacao':int(len(X_val)),
+            'Porcentagem para treino': float(len(X_train)/int(len(Y))),
+            'Porcentagem para validacao': float(len(X_val)/int(len(Y))),
+            'Indices treino': train_idx.tolist(),  # Para conferência
+            'Indices validacao': val_idx.tolist(),  # Para conferência
+        }   
+    
+    }
     
     with open(os.path.join(RUN_DIR, "amplitude_model_metrics.yaml"), "w") as f:
         yaml.dump(results, f, default_flow_style=False,sort_keys=False)
+        
+    with open(os.path.join(RUN_DIR, "amplitude_model_configuracoes_treino.yaml"), "w") as f:
+        yaml.dump(config_treino, f, default_flow_style=False,sort_keys=False)
 
     #grafico de log(A)
 
@@ -201,29 +250,17 @@ def main():
     print("\n" + "="*60)
     print("MÉTRICAS EM log10(A)")
     print("="*60)
-    mae_log = mean_absolute_error(y_val, all_pred)
-    mse_log = mean_squared_error(y_val, all_pred)
-    rmse_log = np.sqrt(mse_log)
     print(f" log(A) MAE:  {mae_log:.6f}")
     print(f" log(A) MSE:  {mse_log:.6f}")
     print(f" log(A) RMSE: {rmse_log:.6f}")
-    print(f"log(A)  R²:   {r2_log:.6f}")
-
-
-    y_val_exp = 10 ** y_val
-    all_pred_exp = 10 ** all_pred
-    
+    print(f" log(A)  R²:   {r2_log:.6f}")
     print("\n" + "="*60)
     print("MÉTRICAS EM A (escala original)")
     print("="*60)
-    mae = mean_absolute_error(y_val_exp, all_pred_exp)
-    mse = mean_squared_error(y_val_exp, all_pred_exp)
-    rmse = np.sqrt(mse)
-    r2 = r2_score(y_val_exp, all_pred_exp)
-    print(f" A MAE:  {mae:.6f}")
-    print(f" A MSE:  {mse:.6f}")
-    print(f" A RMSE: {rmse:.6f}")
-    print(f" A R2:   {r2:.6f}")
+    print(f" A MAE:  {mae_original:.6f}")
+    print(f" A MSE:  {mse_original:.6f}")
+    print(f" A RMSE: {rmse_original:.6f}")
+    print(f" A R2:   {r2_original:.6f}")
     print("="*60)
 
 
