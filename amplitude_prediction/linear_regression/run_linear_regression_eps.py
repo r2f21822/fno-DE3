@@ -23,6 +23,7 @@ RUN_DIR = "amplitude_prediction/linear_regression/results"
 FIG_DIR ="amplitude_prediction/linear_regression/figures"
 
 IDX_DIR="shared_idx/results"
+EPS = 1e-8
 
 
 
@@ -40,22 +41,8 @@ def factorize_target(Y):
       a: max_abs(Y), shape (N, 1)
     """
     #eve verificar se a[i] e finito e maior que zero. Se aparecer uma amostra invalida, o programa deve parar e mostrar uma mensagem clara
-    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True)    
-    for i, val in enumerate(a.view(-1)):
-        #infinito ou nan
-        if not torch.isfinite(val):
-            print(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
-        if val <= 0:
-            print(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
-            
-    shape = Y / a
-    
-    for i in range(len(shape)):
-        max_abs = shape[i].abs().max().item()
-        if not (max_abs==1):
-            print(f"Amostra {i} inválida: max(abs(shape)) = {max_abs}, deveria ser 1")
-    
-        
+    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) + EPS   
+   
     return a.view(-1, 1)
 
 
@@ -87,7 +74,7 @@ def main():
     pa.add_argument("--out-dir", default=RUN_DIR)
     pa.add_argument("--out-dir_figs", default=FIG_DIR)
     pa.add_argument("--idx_dir", default=IDX_DIR)
-    pa.add_argument("--test_size", type=float, default=0.2)
+
     args = pa.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
@@ -104,9 +91,9 @@ def main():
     
   
     X = np.column_stack([
-        np.log10(hs),
-        np.log10(fp),
-        np.log10(gamma),
+        np.log10(hs +EPS),
+        np.log10(fp+EPS),
+        np.log10(gamma+EPS),
         s
     ])
     
@@ -143,9 +130,8 @@ def main():
     
   
     # Salvar resultados
-    os.makedirs(RUN_DIR, exist_ok=True)
-    np.save(os.path.join(RUN_DIR, "all_pred.npy"), all_pred)
-    np.save(os.path.join(RUN_DIR, "all_true.npy"), y_val)
+   
+
 
 
     print(f"Previsões salvas em: {args.out_dir}")
@@ -155,26 +141,26 @@ def main():
     model_params = {
         'coef_': torch.tensor(model.coef_, dtype=torch.float32),
         'intercept_': torch.tensor(model.intercept_, dtype=torch.float32),
-        'feature_names': ['log10(Hs)', 'log10(fp)', 'log10(gamma)', 's'],
+        'feature_names': ['log10(Hs + EPS)', 'log10(fp + EPS)', 'log10(gamma + EPS)', 's'],
         'model_type': 'LinearRegression',
         'n_features': X_train.shape[1],
         
     }
     
 
-    torch.save(model_params, os.path.join(args.out_dir, 'amplitude_model_params.pth'))
-    print(f"Parâmetros .pth salvos: {os.path.join(args.out_dir, 'amplitude_model_params.pth')}")
+    torch.save(model_params, os.path.join(args.out_dir, 'amplitude_model_params_EPS.pth'))
+    print(f"Parâmetros .pth salvos: {os.path.join(args.out_dir, 'amplitude_model_params_EPS.pth')}")
 
     #para utilizar em um yamal para poder visualizar os resultados, futuramente juntar ambos e modificar os ourtros arquivos afetadps 
     results = {
-        'coefficients': {
+        'coefficients EPS': {
             'intercept': float(model.intercept_),           
             'log10_hs': float(model.coef_[0]),            
             'log10_fp': float(model.coef_[1]),             
             'log10_gamma': float(model.coef_[2]),          
             's': float(model.coef_[3]),                    
         },
-        'metrics': {
+        'metrics EPS': {
             'MAE (escala original)': float(mae_original), 
             'MSE (escala original)': float(mse_original), 
             'RMSE (escala original)': float(rmse_original),            
@@ -190,7 +176,7 @@ def main():
     
   
     config_treino={
-    'Configuracao do conjunto de amostras':{
+    'Configuracao do conjunto de amostras EPS':{
             'Tamanho do conjunto de amostras total': int(len(Y)),
             'Tamanho do conjunto de treino': int(len(X_train)),
             'Tamanho do conjunto de validacao':int(len(X_val)),
@@ -202,10 +188,10 @@ def main():
     
     }
     
-    with open(os.path.join(RUN_DIR, "amplitude_model_metrics.yaml"), "w") as f:
+    with open(os.path.join(RUN_DIR, "amplitude_model_metrics_eps.yaml"), "w") as f:
         yaml.dump(results, f, default_flow_style=False,sort_keys=False)
         
-    with open(os.path.join(RUN_DIR, "amplitude_model_configuracoes_treino.yaml"), "w") as f:
+    with open(os.path.join(RUN_DIR, "amplitude_model_configuracoes_treino_eps.yaml"), "w") as f:
         yaml.dump(config_treino, f, default_flow_style=False,sort_keys=False)
 
     #grafico de log(A)
@@ -231,11 +217,11 @@ def main():
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir_figs, "amplitude__logtrue_vs_logpred.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir_figs, "amplitude__logtrue_vs_logpred_EPS.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"grafico log(A_true) vs log(A_pred) salvo em: {os.path.join(args.out_dir_figs, 'amplitude__logtrue_vs_logpred.pdf')}")
+    print(f"grafico log(A_true) vs log(A_pred) COM EPS salvo em: {os.path.join(args.out_dir_figs, 'amplitude__logtrue_vs_logpred_EPS.pdf')}")
 
-    print(f"\n Treinamento finalizado")
+    print(f"\n Treinamento finalizado COM EPS")
     print(f" Arquivos salvos em: {args.out_dir}")
 
 
@@ -248,12 +234,12 @@ def main():
     
 
     print("\n" + "="*60)
-    print("MÉTRICAS EM log10(A)")
+    print("MÉTRICAS EM log10(A+EPS)")
     print("="*60)
-    print(f" log(A) MAE:  {mae_log:.6f}")
-    print(f" log(A) MSE:  {mse_log:.6f}")
-    print(f" log(A) RMSE: {rmse_log:.6f}")
-    print(f" log(A)  R²:   {r2_log:.6f}")
+    print(f" log(A+EPS) MAE:  {mae_log:.6f}")
+    print(f" log(A+EPS) MSE:  {mse_log:.6f}")
+    print(f" log(A+EPS) RMSE: {rmse_log:.6f}")
+    print(f" log(A+EPS)  R²:   {r2_log:.6f}")
     print("\n" + "="*60)
     print("MÉTRICAS EM A (escala original)")
     print("="*60)
@@ -281,13 +267,13 @@ def main():
 
     plt.xlabel('log(Amplitude Real)')
     plt.ylabel('log(Amplitude Predita)')
-    plt.title(f'Real vs Predito - {len(y_val)} amostras de validação')
+    plt.title(f'Real vs Predito (treinado com + EPS)- {len(y_val)} amostras de validação')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(args.out_dir_figs, "amplitude_original_true_vs_pred.pdf"), dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(args.out_dir_figs, "amplitude_original_true_vs_pred_EPS.pdf"), dpi=150, bbox_inches='tight')
     plt.close()
-    print(f"grafico de amplitude_rel vs amplitude_predita salvo em: {os.path.join(args.out_dir_figs, 'amplitude_original_true_vs_pred.pdf')}")
+    print(f"grafico de amplitude_rel vs amplitude_predita COM EPS salvo em: {os.path.join(args.out_dir_figs, 'amplitude_original_true_vs_pred_EPS.pdf')}")
 
   
 

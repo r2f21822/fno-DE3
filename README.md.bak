@@ -14,7 +14,6 @@ Estrutura do projeto:
 ├── amplitude_prediction/                         # preve apenas a amplitude das amostras
 │ ├── linear_regression/
 │ │ ├── run_linear_regression.py                  # treina o modelo de regressão
-│ │ ├── run_linear_regression_eps.py              # treina o modelo de regressão somandouma constante no log(a)
 │ │ ├── metricas.py
 │ │ ├── plot_erro_por_amostra.py
 │ │ ├── plot_erro_percentual.py

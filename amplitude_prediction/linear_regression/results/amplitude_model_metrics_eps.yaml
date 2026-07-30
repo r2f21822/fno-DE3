@@ -1,0 +1,14 @@
+coefficients EPS:
+  intercept: 1.2053799629211426
+  log10_hs: 5.8594746589660645
+  log10_fp: 9.508933067321777
+  log10_gamma: 2.0281119346618652
+  s: 0.04097175598144531
+metrics EPS:
+  MAE (escala original): 0.0072580669075250626
+  MSE (escala original): 0.0016055137384682894
+  RMSE (escala original): 0.040068862455381604
+  R2 (escala original): 0.9678542613983154
+  MAE (escala log): 0.09128057956695557
+  RMSE (escala log): 0.13078956734792446
+  R2 (escala log): 0.9951860308647156
