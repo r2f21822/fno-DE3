@@ -40,7 +40,7 @@ def factorize_target(Y):
       a: max_abs(Y), shape (N, 1)
     """
     #eve verificar se a[i] e finito e maior que zero. Se aparecer uma amostra invalida, o programa deve parar e mostrar uma mensagem clara
-    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True)    
+    a = Y.abs().amax(dim=(1, 2, 3), keepdim=True) 
     for i, val in enumerate(a.view(-1)):
         #infinito ou nan
         if not torch.isfinite(val):
