@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score,mean_absolute_percentage_error
 from sklearn.model_selection import train_test_split
 
 
@@ -125,6 +125,7 @@ def main():
     mae_original = mean_absolute_error(y_val_exp, all_pred_exp)
     mse_original= mean_squared_error(y_val_exp, all_pred_exp)
     rmse_original = np.sqrt(mean_squared_error(y_val_exp, all_pred_exp))
+    mape_original=mean_absolute_percentage_error(y_val_exp, all_pred_exp)
     r2_original = r2_score(y_val_exp, all_pred_exp)
     
     
@@ -152,21 +153,24 @@ def main():
     print(f"Parâmetros .pth salvos: {os.path.join(args.out_dir, 'amplitude_model_params_EPS.pth')}")
 
     #para utilizar em um yamal para poder visualizar os resultados, futuramente juntar ambos e modificar os ourtros arquivos afetadps 
+
+    
     results = {
-        'coefficients EPS': {
+    'coefficients': {
             'intercept': float(model.intercept_),           
             'log10_hs': float(model.coef_[0]),            
             'log10_fp': float(model.coef_[1]),             
             'log10_gamma': float(model.coef_[2]),          
             's': float(model.coef_[3]),                    
         },
-        'metrics EPS': {
+    'metrics': {
             'MAE (escala original)': float(mae_original), 
             'MSE (escala original)': float(mse_original), 
-            'RMSE (escala original)': float(rmse_original),            
+            'RMSE (escala original)': float(rmse_original), 
+            'MAPE (escala original)': float(mape_original),            
             'R2 (escala original)': float(r2_original),
             'MAE (escala log)': float(mae_log), 
-            'MSE (escala original)': float(mse_original), 
+            'MSE (escala log)': float(mse_log), 
             'RMSE (escala log)': float(rmse_log),            
             'R2 (escala log)': float(r2_log),                            
 

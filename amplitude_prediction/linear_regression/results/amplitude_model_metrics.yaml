@@ -8,7 +8,9 @@ metrics:
   MAE (escala original): 0.004858517553657293
   MSE (escala original): 0.0006031903903931379
   RMSE (escala original): 0.024559934657753833
+  MAPE (escala original): 0.20005209743976593
   R2 (escala original): 0.9879229068756104
   MAE (escala log): 0.08108930289745331
+  MSE (escala log): 0.011117316782474518
   RMSE (escala log): 0.1054386873138817
   R2 (escala log): 0.9969918131828308
