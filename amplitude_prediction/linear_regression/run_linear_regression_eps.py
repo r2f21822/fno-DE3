@@ -18,11 +18,11 @@ from sklearn.model_selection import train_test_split
 
 
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
-RUN_DIR = "amplitude_prediction/linear_regression/results"
+RUN_DIR = "amplitude_prediction/linear_regression/results_eps"
 #depois retirar daqui e colocar em outra pasta
-FIG_DIR ="amplitude_prediction/linear_regression/figures"
+FIG_DIR ="amplitude_prediction/linear_regression/figures_eps"
 
-IDX_DIR="shared_idx/results"
+IDX_DIR="train_test_split/results"
 EPS = 1e-8
 
 

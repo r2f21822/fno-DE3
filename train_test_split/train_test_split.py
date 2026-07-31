@@ -6,7 +6,7 @@ import h5py
 from sklearn.model_selection import train_test_split
 
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
-INDICES_DIR = "shared_idx/results"
+INDICES_DIR = "train_test_split/results"
 
 def main():
     pa = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)

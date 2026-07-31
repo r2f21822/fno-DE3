@@ -19,7 +19,7 @@ from fno_diffusion.model import make_fno_2d
 
 DATA_PATH = "Generate_data/snl/snl_dataset.h5"
 RUN_DIR   = "shape_prediction/results"
-IDX_DIR="shared_idx/results"
+IDX_DIR="train_test_split/results"
 FIG_DIR = "shape_prediction/figures"
 
 

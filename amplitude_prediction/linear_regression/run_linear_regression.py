@@ -22,7 +22,7 @@ RUN_DIR = "amplitude_prediction/linear_regression/results"
 #depois retirar daqui e colocar em outra pasta
 FIG_DIR ="amplitude_prediction/linear_regression/figures"
 
-IDX_DIR="shared_idx/results"
+IDX_DIR="train_test_split/results"
 
 
 

@@ -1,7 +1,7 @@
 {
-  "final_train_loss": 0.8723312437534332,
-  "final_val_loss": 0.8756730437278748,
-  "best_val_loss": 0.8756730437278748,
+  "final_train_loss": 0.8907308876514435,
+  "final_val_loss": 0.8466348648071289,
+  "best_val_loss": 0.8466348648071289,
   "loss_type": "peak_weighted_relative_L2",
   "normalization": {
     "mode": "per_sample",
