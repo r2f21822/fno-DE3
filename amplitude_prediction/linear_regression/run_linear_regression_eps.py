@@ -269,8 +269,8 @@ def main():
              [min_val - 0.5, max_val + 0.5],
              'r--', lw=2, label='Ideal')
 
-    plt.xlabel('log(Amplitude Real)')
-    plt.ylabel('log(Amplitude Predita)')
+    plt.xlabel('Amplitude Real')
+    plt.ylabel('Amplitude Predita')
     plt.title(f'Real vs Predito (treinado com + EPS)- {len(y_val)} amostras de validação')
     plt.legend()
     plt.grid(True, alpha=0.3)
