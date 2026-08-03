@@ -1,28 +1,28 @@
 {
-  "final_train_loss": 0.9343043625354767,
-  "final_val_loss": 0.8787302136421203,
-  "best_val_loss": 0.8787302136421203,
+  "final_train_loss": 0.011380369978025556,
+  "final_val_loss": 0.011818328633904458,
+  "best_val_loss": 0.011808546289801597,
   "loss_type": "peak_weighted_relative_L2",
   "normalization": {
     "mode": "per_sample",
-    "scale_train_mean": 0.08185112476348877
+    "scale_train_mean": 0.032508157193660736
   },
-  "epochs": 2,
+  "epochs": 100,
   "batch_size": 16,
   "learning_rate": 0.001,
-  "device": "cpu",
+  "device": "cuda",
   "train_stats": {
     "X": {
       "min": 0.0,
       "max": 107.76480865478516,
-      "mean": 0.1420954316854477,
-      "std": 1.1891056299209595
+      "mean": 0.14980562031269073,
+      "std": 1.2408620119094849
     },
     "Y": {
       "min": -5.798664093017578,
       "max": 2.62981915473938,
-      "mean": -3.569199975572701e-07,
-      "std": 0.023364894092082977
+      "mean": -3.0191932864909177e-07,
+      "std": 0.008767464198172092
     }
   }
 }
