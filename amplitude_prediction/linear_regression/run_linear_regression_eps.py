@@ -125,7 +125,7 @@ def main():
     mae_original = mean_absolute_error(y_val_exp, all_pred_exp)
     mse_original= mean_squared_error(y_val_exp, all_pred_exp)
     rmse_original = np.sqrt(mean_squared_error(y_val_exp, all_pred_exp))
-    mape_original=mean_absolute_percentage_error(y_val_exp, all_pred_exp)
+    mape_original=mean_absolute_percentage_error(y_val_exp, all_pred_exp)*100
     r2_original = r2_score(y_val_exp, all_pred_exp)
     
     
@@ -167,7 +167,7 @@ def main():
             'MAE (escala original)': float(mae_original), 
             'MSE (escala original)': float(mse_original), 
             'RMSE (escala original)': float(rmse_original), 
-            'MAPE (escala original)': float(mape_original),            
+            'MAPE (escala original)': f"{float(mape_original):.6f}%",           
             'R2 (escala original)': float(r2_original),
             'MAE (escala log)': float(mae_log), 
             'MSE (escala log)': float(mse_log), 
