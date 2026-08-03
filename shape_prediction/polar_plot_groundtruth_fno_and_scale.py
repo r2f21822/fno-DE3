@@ -22,7 +22,7 @@ from sklearn.linear_model import LinearRegression
 from fno_diffusion.model import make_fno_2d
 
 _trapz = getattr(np, "trapezoid", None) or np.trapz
-EPS = 1e-8
+
 
 
 class FNOOnly(nn.Module):
@@ -90,8 +90,8 @@ def load_model(model_path, n_modes=(16, 16), hidden_channels=64):
     return model
 
 
-def rel_l2(pred, target, eps=EPS):
-    return float(np.linalg.norm((pred - target).ravel()) / (np.linalg.norm(target.ravel()) + eps))
+def rel_l2(pred, target):
+    return float(np.linalg.norm((pred - target).ravel()) / (np.linalg.norm(target.ravel())))
 
 
 def polar_plot(ax, theta, f, data, title, cmap="RdBu_r", symmetric=True, symlog=True):
@@ -244,9 +244,9 @@ def main():
     s_tensor = torch.tensor([s], dtype=torch.float32)
 
     X_amp = np.array([[
-        np.log10(Hs + EPS),
-        np.log10(fp + EPS),
-        np.log10(gamma + EPS),
+        np.log10(Hs),
+        np.log10(fp),
+        np.log10(gamma),
         float(s)
     ]])
 
@@ -267,7 +267,7 @@ def main():
     print(f" Forma normalizada prevista: St_pred shape {St_pred.shape}")
 
     # ==
-    a_gt = float(np.max(np.abs(S_gt)) + EPS)
+    a_gt = float(np.max(np.abs(S_gt)))
     St_gt = S_gt / a_gt
     S_pred = St_pred * a_pred
 
@@ -277,7 +277,7 @@ def main():
     print("="*60)
     print(f"a_gt     = {a_gt:.6e}")
     print(f"a_pred   = {a_pred:.6e}")
-    print(f"rel_a    = {abs(a_pred-a_gt)/(abs(a_gt)+EPS):.6e} ({abs(a_pred-a_gt)/(abs(a_gt)+EPS)*100:.2f}%)")
+    print(f"rel_a    = {abs(a_pred-a_gt)/(abs(a_gt)):.6e} ({abs(a_pred-a_gt)/(abs(a_gt))*100:.2f}%)")
     print(f"shape RelL2   = {rel_l2(St_pred, St_gt):.6e}")
     print(f"physical RelL2 = {rel_l2(S_pred, S_gt):.6e}")
     print("="*60)

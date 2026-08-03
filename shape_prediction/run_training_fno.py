@@ -49,16 +49,16 @@ def normalize_per_sample(Y):
     for i, val in enumerate(a.view(-1)):
         #infinito ou nan
         if not torch.isfinite(val):
-            print(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
+            raise ValueError(f"Amostra {i} inválida: amplitude não é finita (valor: {val})")
         if val <= 0:
-            print(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
+            raise ValueError(f"Amostra {i} inválida: amplitude menor que zero (valor: {val})")
             
     shape = Y / a
     
     for i in range(len(shape)):
         max_abs = shape[i].abs().max().item()
         if not (max_abs==1):
-            print(f"Amostra {i} inválida: max(abs(shape)) = {max_abs}, deveria ser 1")
+            raise ValueError(f"Amostra {i} inválida: max(abs(shape)) = {max_abs}, deveria ser 1")
     return Y / a, a
  
     

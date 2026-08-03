@@ -1,13 +1,13 @@
 {
-  "final_train_loss": 0.8907308876514435,
-  "final_val_loss": 0.8466348648071289,
-  "best_val_loss": 0.8466348648071289,
+  "final_train_loss": 0.9343043625354767,
+  "final_val_loss": 0.8787302136421203,
+  "best_val_loss": 0.8787302136421203,
   "loss_type": "peak_weighted_relative_L2",
   "normalization": {
     "mode": "per_sample",
     "scale_train_mean": 0.08185112476348877
   },
-  "epochs": 3,
+  "epochs": 2,
   "batch_size": 16,
   "learning_rate": 0.001,
   "device": "cpu",
@@ -15,13 +15,13 @@
     "X": {
       "min": 0.0,
       "max": 107.76480865478516,
-      "mean": 0.1420954465866089,
+      "mean": 0.1420954316854477,
       "std": 1.1891056299209595
     },
     "Y": {
       "min": -5.798664093017578,
       "max": 2.62981915473938,
-      "mean": -3.5692013966581726e-07,
+      "mean": -3.569199975572701e-07,
       "std": 0.023364894092082977
     }
   }
