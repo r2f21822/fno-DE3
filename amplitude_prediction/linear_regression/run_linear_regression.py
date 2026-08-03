@@ -84,14 +84,15 @@ def load_hs_fp_dataset(path):
 def main():
     pa = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     pa.add_argument("--h5file", default=DATA_PATH)
-    pa.add_argument("--out-dir", default=RUN_DIR)
-    pa.add_argument("--out-dir_figs", default=FIG_DIR)
+    pa.add_argument("--out_dir", default=RUN_DIR)
+    pa.add_argument("--out_dir_figs", default=FIG_DIR)
     pa.add_argument("--idx_dir", default=IDX_DIR)
 
     args = pa.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
     os.makedirs(args.out_dir_figs, exist_ok=True)
+ 
 
 
 

@@ -124,8 +124,10 @@ def main():
     pa.add_argument("--epochs",type=int, default=100)
     args = pa.parse_args()
 
-    os.makedirs(RUN_DIR, exist_ok=True)
-    
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    os.makedirs(args.out_dir_figs, exist_ok=True)
+ 
     
     CONFIG = {
     "model": {
