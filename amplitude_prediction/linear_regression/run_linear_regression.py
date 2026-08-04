@@ -146,11 +146,11 @@ def main():
   
     # Salvar resultados
     os.makedirs(RUN_DIR, exist_ok=True)
-    np.save(os.path.join(RUN_DIR, "all_pred.npy"), all_pred)
-    np.save(os.path.join(RUN_DIR, "all_true.npy"), y_val)
+    np.save(os.path.join(args.out_dir, "all_pred.npy"), all_pred)
+    np.save(os.path.join(args.out_dir, "all_true.npy"), y_val)
 
 
-    print(f"Previsões salvas em: {args.out_dir}")
+    print(f"Previsões .npy salvas em: {args.out_dir}")
 
 
     #para utilizar como dados nos grafico
@@ -205,12 +205,15 @@ def main():
     
     }
     
-    with open(os.path.join(RUN_DIR, "amplitude_model_metrics.yaml"), "w") as f:
+    with open(os.path.join(args.out_dir, "amplitude_model_metrics.yaml"), "w") as f:
         yaml.dump(results, f, default_flow_style=False,sort_keys=False)
+   
+    print(f"Metricas .ymal salvas em: {os.path.join(args.out_dir, 'amplitude_model_metrics.yaml')}")
         
-    with open(os.path.join(RUN_DIR, "amplitude_model_configuracoes_treino.yaml"), "w") as f:
+    with open(os.path.join(args.out_dir, "amplitude_model_configuracoes_treino.yaml"), "w") as f:
         yaml.dump(config_treino, f, default_flow_style=False,sort_keys=False)
 
+    print(f"Configurações de treino .ymal salvas em: {os.path.join(args.out_dir, 'amplitude_model_configuracoes_treino.yaml')}")
     #grafico de log(A)
 
     min_val = min(y_val.min(), all_pred.min())

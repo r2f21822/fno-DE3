@@ -71,8 +71,8 @@ def load_hs_fp_dataset(path):
 def main():
     pa = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     pa.add_argument("--h5file", default=DATA_PATH)
-    pa.add_argument("--out-dir", default=RUN_DIR)
-    pa.add_argument("--out-dir_figs", default=FIG_DIR)
+    pa.add_argument("--out_dir", default=RUN_DIR)
+    pa.add_argument("--out_dir_figs", default=FIG_DIR)
     pa.add_argument("--idx_dir", default=IDX_DIR)
 
     args = pa.parse_args()
@@ -132,8 +132,9 @@ def main():
   
     # Salvar resultados
    
-
-
+    os.makedirs(RUN_DIR, exist_ok=True)
+    np.save(os.path.join(args.out_dir, "all_pred_eps.npy"), all_pred)
+    np.save(os.path.join(args.out_dir, "all_true_eps.npy"), y_val)
 
     print(f"Previsões salvas em: {args.out_dir}")
 
@@ -191,14 +192,18 @@ def main():
         }   
     
     }
+
     
-    with open(os.path.join(RUN_DIR, "amplitude_model_metrics_eps.yaml"), "w") as f:
+    with open(os.path.join(args.out_dir, "amplitude_model_metrics_eps.yaml"), "w") as f:
         yaml.dump(results, f, default_flow_style=False,sort_keys=False)
+   
+    print(f"Metricas .ymal salvas em: {os.path.join(args.out_dir, 'amplitude_model_metrics_eps.yaml')}")
         
-    with open(os.path.join(RUN_DIR, "amplitude_model_configuracoes_treino_eps.yaml"), "w") as f:
+    with open(os.path.join(args.out_dir, "amplitude_model_configuracoes_treino_eps.yaml"), "w") as f:
         yaml.dump(config_treino, f, default_flow_style=False,sort_keys=False)
 
-    #grafico de log(A)
+    print(f"Configurações de treino .ymal salvas em: {os.path.join(args.out_dir, 'amplitude_model_configuracoes_treino_eps.yaml')}")
+ 
 
     min_val = min(y_val.min(), all_pred.min())
     max_val = max(y_val.max(), all_pred.max())
