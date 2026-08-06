@@ -32,10 +32,10 @@ parametros modificaveis:
 --h5file (diretorio dos dados, defult="Generate_data/snl/snl_dataset.h5")
 
 
---out-dir (diretorio de saida dos resultados do modelo, defult="amplitude_prediction/linear_regression/results")
+--out_dir (diretorio de saida dos resultados do modelo, defult="amplitude_prediction/linear_regression/results")
 
 
---out-dir_figs (diretorio das figuras, defult="amplitude_prediction/linear_regression/figures/out")
+--out_dir_figs (diretorio das figuras, defult="amplitude_prediction/linear_regression/figures/out")
 
 
 
@@ -53,10 +53,10 @@ parametros modificaveis:
 --h5file (diretorio dos dados, defult="Generate_data/snl/snl_dataset.h5")
 
 
---out-dir (diretorio de saida dos resultados do modelo, defult="amplitude_prediction/linear_regression/results")
+--out_dir (diretorio de saida dos resultados do modelo, defult="amplitude_prediction/linear_regression/results")
 
 
---out-dir_figs (diretorio das figuras, defult="amplitude_prediction/linear_regression/figures/out")
+--out_dir_figs (diretorio das figuras, defult="amplitude_prediction/linear_regression/figures/out")
 
 
 ### 2. Gráficos           
