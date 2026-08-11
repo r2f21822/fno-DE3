@@ -18,7 +18,7 @@ comandos de execução no diretorio shared_idx:
    
    --h5file" (default=DATA_PATH)
    
-   --out-dir" (default=INDICES_DIR)
+   --out_dir" (default=INDICES_DIR)
    
    --seed" (default=42)
    
