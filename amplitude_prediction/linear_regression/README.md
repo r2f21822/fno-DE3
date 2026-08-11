@@ -99,7 +99,7 @@ parametros modificaveis:
 
 ### 3. Metricas no terminal
 ```texto
-python amplitude_prediction/linears_regression/metricas.py
+python amplitude_prediction/linear_regression/metricas.py
    ```
 parametris modificaveis:
 
