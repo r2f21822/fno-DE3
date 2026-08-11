@@ -20,7 +20,7 @@ def metricas(results_dir):
     mae = np.mean(np.abs(all_true - all_pred))
     mse = np.mean((all_true - all_pred) ** 2)
     rmse = np.sqrt(mse)
-    mape = np.mean(np.abs((all_true - all_pred) / (all_true+ 1e-8))) * 100
+    mape = np.mean(np.abs((all_true - all_pred) / (all_true))) * 100
     rmse_percentual = (rmse / np.mean(all_true)) * 100
     
     print(f"log (A): MAE  (Erro Absoluto Médio):              {mae:.6f}")
@@ -34,7 +34,7 @@ def metricas(results_dir):
     mae = np.mean(np.abs(all_true_exp - all_pred_exp))
     mse = np.mean((all_true_exp - all_pred_exp) ** 2)
     rmse = np.sqrt(mse)
-    mape = np.mean(np.abs((all_true_exp - all_pred_exp) / (all_true_exp + 1e-8))) * 100
+    mape = np.mean(np.abs((all_true_exp - all_pred_exp) / (all_true_exp))) * 100
     rmse_percentual = (rmse / np.mean(all_true_exp)) * 100
     
     print(f"A: MAE  (Erro Absoluto Médio):              {mae:.6f}")
@@ -75,7 +75,7 @@ def metricas(results_dir):
     n_menor = len(true_menor)
     mae_menor = np.mean(np.abs(true_menor - pred_menor))
     rmse_menor = np.sqrt(np.mean((true_menor - pred_menor) ** 2))
-    mape_menor = np.mean(np.abs((true_menor - pred_menor) / (true_menor + 1e-8))) * 100
+    mape_menor = np.mean(np.abs((true_menor - pred_menor) / (true_menor))) * 100
     
     print("\n METADE MENOR (amplitudes <= mediana)")
     print(f"  Número de amostras:        {n_menor}")
@@ -95,7 +95,7 @@ def metricas(results_dir):
     n_maior = len(true_maior)
     mae_maior = np.mean(np.abs(true_maior - pred_maior))
     rmse_maior = np.sqrt(np.mean((true_maior - pred_maior) ** 2))
-    mape_maior = np.mean(np.abs((true_maior - pred_maior) / (true_maior + 1e-8))) * 100
+    mape_maior = np.mean(np.abs((true_maior - pred_maior) / (true_maior))) * 100
     
     print("\n METADE MAIOR (amplitudes > mediana)")
     print(f"  Número de amostras:        {n_maior}")
