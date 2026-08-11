@@ -19,7 +19,7 @@ comandos de execução no diretorio fno-DE3:
 
 ### 1. Geração
 ```texto
-  python Generate_data/generate_snl_data.py --n-sample 5000
+  python Generate_data/generate_snl_data.py --n-samples=5000
    ```
 --n-samples (Número total de amostras, default=1000)
 
