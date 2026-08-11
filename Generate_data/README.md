@@ -38,9 +38,9 @@ comandos de execução no diretorio fno-DE3:
 
 ### 2. Gráficos de analise          
 ```texto
-python Generate_data/plt_amplitude_histograma.py
+python Generate_data/plot_amplitude_histogram.py
    ```
-histograma da distribuição de amplitudes em log10
+histograma da distribuição de amplitudes em log10 e real
 
 ```texto
 python Generate_data/plot_gamma_s.py
@@ -48,6 +48,6 @@ python Generate_data/plot_gamma_s.py
 gráficos da relação de gamma e s com log(amplitude)
 
 ```texto
-python Generate_data/plot_loga_logHs_logFp 
+python Generate_data/plot_loga_logHs_logFp.py
 ```
 gráficos da relação de log(Hps) e log(Fp) com log(amplitude)
