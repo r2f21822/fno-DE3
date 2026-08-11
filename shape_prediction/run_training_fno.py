@@ -260,6 +260,7 @@ def main():
             'Porcentagem para treino': float(n_train/n_total),
             'Porcentagem para validacao': float((n_total - n_train)/n_total),
             'Indices treino': train_idx.tolist(),  # Para conferência
+            'Indices validacao': val_idx.tolist(),  # Para conferência
     
         }   
     
@@ -273,7 +274,7 @@ def main():
         "final_train_loss": train_losses[-1],
         "final_val_loss": val_losses[-1],
         "best_val_loss": best_val,
-        "loss_type": "peak_weighted_relative_L2",
+        "loss_type": "relative_L2",
         "normalization": {
             "mode": "per_sample",
             "scale_train_mean": scale_train_mean,
