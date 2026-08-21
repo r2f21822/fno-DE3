@@ -6,7 +6,7 @@ Estrutura do projeto:
 ├── shape_prediction/                             # forma do modelo (normalizado) utilizando um FNO
 │ ├── fno_diffusion/
 │ ├── run_training_fno.py                         # treina o FNO
-│ ├── polar_plot_groundtruth_fno_and_scale.py
+│ ├── polar_plot_groundtruth_fno.py
 │ ├── results/
 │ ├── figures/
 │ └── README.md
@@ -22,8 +22,12 @@ Estrutura do projeto:
 │ │ ├── figures/
 │ │ ├── results/
 │ │ └── README.md
-│ │
 │ └── mlp/
+│
+├──  physical_spectrum_prediction/ 
+│ ├── polar_plot_groundtruth_fno_and_scale.py                       
+│ ├── figires/
+│ └── README.md
 │
 ├── Generate_data/                                 # geração e analise o dataset sintético 
 │ ├── generate_snl_data.py                         # gera o dataset
@@ -119,6 +123,6 @@ treina o modelo FNO normalizado. Configurções adicionais em shape_prediction/R
 
 ### 7. Gráfico por amostra do modelo FNO e amplitude
 ```texto
-python shape_prediction/polar_plot_groundtruth_fno_and_scale.py
+python physical_spectrum_prediction/polar_plot_groundtruth_fno_and_scale.py
    ```
 gráficos por amostra do fno e amplitude pré-treinados
