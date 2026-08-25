@@ -1,0 +1,19 @@
+coefficients:
+  intercept: -7.047711372375488
+  log10_hs: 5.968326568603516
+metrics:
+  MAE (escala original): 8.614173566456884e-06
+  MSE (escala original): 3.312619623052626e-10
+  RMSE (escala original): 1.820060335003383e-05
+  MAPE (escala original): 1.251533%
+  R2 (escala original): 0.9996711611747742
+  MAE (escala log): 0.005407287739217281
+  MSE (escala log): 4.4996013457421213e-05
+  RMSE (escala log): 0.006707906786578151
+  R2 (escala log): 0.9999709725379944
+  "M\xE9dia de q": 8.641114845886477e-08
+  Desvio padrao de q: 1.3139819232677041e-09
+  Variancia relativa de q (%): 1.5206161886453629
+  q minimo: 8.465755740871828e-08
+  q maximo: 8.959560915400289e-08
+  Total de amostras: 1000
