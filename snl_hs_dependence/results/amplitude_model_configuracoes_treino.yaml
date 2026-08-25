@@ -1,4 +1,8 @@
 Configuracao do conjunto de amostras:
+  Valor de fp: 0.10000000149011612
+  Valor de gamma: 3.299999952316284
+  Valor de theta0: 0.0
+  Valor de s: 4.0
   Tamanho do conjunto de amostras total: 5000
   Tamanho do conjunto de treino: 4000
   Tamanho do conjunto de validacao: 1000

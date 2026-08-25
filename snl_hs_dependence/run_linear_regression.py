@@ -66,16 +66,18 @@ def load_hs_fp_dataset(path):
     with h5py.File(path, "r") as hf:
         Hs = hf["Hs"][:]    
         Y = hf["Y"][:]
-        mask = (hf["fp"][:] == 0.1) & (hf["gamma"][:] == 3.3) & (hf["theta0"][:] == 0.0) & (hf["s"][:] == 4)
-        indices_validos = np.where(mask)[0]
-        print(f"Amostras com parâmetros fixos: {len(indices_validos)}")
+        fp= hf["fp"][:]
+        gamma=hf["gamma"][:]
+        th0=hf["theta0"][:]
+        s=hf["s"][:]
+        
     
     Hs = torch.tensor(Hs, dtype=torch.float32)
     Y = torch.tensor(Y, dtype=torch.float32).permute(0, 3, 1, 2)
     
     tam_Y=len(Y)
     
-    return Hs,Y,tam_Y
+    return Hs,Y,tam_Y,fp,gamma,th0,s
 
 
 
@@ -94,7 +96,7 @@ def main():
 
 
 
-    hs, Y, tam_Y = load_hs_fp_dataset(args.h5file)
+    hs, Y, tam_Y,fp,gamma,th0,s = load_hs_fp_dataset(args.h5file)
     
     a = factorize_target(Y)
     a_log = np.log10(a)
@@ -214,6 +216,11 @@ def main():
   
     config_treino={
     'Configuracao do conjunto de amostras':{
+            'Valor de fp': float(fp[1]),
+            'Valor de gamma':float(gamma[1]),
+            'Valor de theta0':float(th0[1]),
+            'Valor de s':float(s[1]),
+
             'Tamanho do conjunto de amostras total': int(len(Y)),
             'Tamanho do conjunto de treino': int(len(X_train)),
             'Tamanho do conjunto de validacao':int(len(X_val)),
@@ -221,6 +228,9 @@ def main():
             'Porcentagem para validacao': float(len(X_val)/int(len(Y))),
             'Indices treino': train_idx.tolist(),  # Para conferência
             'Indices validacao': val_idx.tolist(),  # Para conferência
+
+
+
         }   
     
     }
