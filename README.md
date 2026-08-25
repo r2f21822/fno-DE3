@@ -41,7 +41,7 @@ Estrutura do projeto:
 │
 ├── snl_hs_dependence/                          # experimento sobre a relação de snl com Hs
 │ ├── run_linear_regression.py
-│ ├── plot_and_table_hs.py                       # gera os indices compartilhados
+│ ├── plot_and_table_hs.py                       
 │ ├── results/
 │ ├── figures/
 │ └── README.md
