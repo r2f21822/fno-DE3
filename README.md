@@ -39,7 +39,7 @@ Estrutura do projeto:
 │ ├── results/
 │ └── README.md
 │
-├── snl_hs_dependence/                          # experimento sobre a relação de snl com Hs
+├── snl_hs_dependence/                             # experimento sobre a relação de snl com Hs
 │ ├── run_linear_regression.py
 │ ├── plot_and_table_hs.py                       
 │ ├── results/
@@ -47,7 +47,7 @@ Estrutura do projeto:
 │ └── README.md
 │
 ├── train_test_split/ 
-│ ├── train_test_split.py                       # gera os indices compartilhados
+│ ├── train_test_split.py                          # gera os indices compartilhados
 │ ├── results/
 │ └── README.md
 └── README.md
