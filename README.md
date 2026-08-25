@@ -6,7 +6,6 @@ Estrutura do projeto:
 ├── shape_prediction/                             # forma do modelo (normalizado) utilizando um FNO
 │ ├── fno_diffusion/
 │ ├── run_training_fno.py                         # treina o FNO
-│ ├── polar_plot_groundtruth_fno.py
 │ ├── results/
 │ ├── figures/
 │ └── README.md
@@ -19,24 +18,32 @@ Estrutura do projeto:
 │ │ ├── plot_erro_por_amostra.py
 │ │ ├── plot_erro_percentual.py
 │ │ ├── plot_linear_regression_zoomed.py
-│ │ ├── figures/
 │ │ ├── results/
+│ │ ├── figures/
 │ │ └── README.md
 │ └── mlp/
 │
-├──  physical_spectrum_prediction/ 
+├──  physical_spectrum_prediction/                # une a previsão da amplitude com a previsão da forma 
 │ ├── polar_plot_groundtruth_fno_and_scale.py                       
 │ ├── figires/
 │ └── README.md
 │
 ├── Generate_data/                                 # geração e analise o dataset sintético 
 │ ├── generate_snl_data.py                         # gera o dataset
+│ ├── generat_data_hs_variable.py                  # gera um dataset com todos os parametros fixos com exceção do hs
 │ ├── plt_amplitude_histograma.py
 │ ├── plot_gamma.s.py
 │ ├── plot_loga_logHs_logFp
 │ ├── snl_physics.py
 │ ├── snl/
 │ ├── results/
+│ └── README.md
+│
+├── snl_hs_dependence/                          # experimento sobre a relação de snl com Hs
+│ ├── run_linear_regression.py
+│ ├── plot_and_table_hs.py                       # gera os indices compartilhados
+│ ├── results/
+│ ├── figures/
 │ └── README.md
 │
 ├── train_test_split/ 
