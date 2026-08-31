@@ -266,9 +266,28 @@ def main():
     
     }
     
-        
+    all_preds = torch.cat(all_preds, dim=0)
+    all_targets = torch.cat(all_targets, dim=0)
+    
+    # Calcular diferença
+    diff = all_preds - all_targets
+    
+    # MAE - Mean Absolute Error
+    mae_original = diff.abs().mean().item()
+    
+    # MSE - Mean Squared Error
+    mse_original = (diff ** 2).mean().item()
+    
+    # RMSE - Root Mean Squared Error
+    rmse_original = np.sqrt(mse_original)
+    
+    # MAPE - Mean Absolute Percentage Error
+    # Evita divisão por zero adicionando um pequeno epsilon
+  
+    mape_original = (diff.abs() / (all_targets.abs())).mean().item() * 100    
     with open(os.path.join(args.out_dir, "shape_model_configuracoes_treino.yaml"), "w") as f:
         yaml.dump(config_treino, f, default_flow_style=False,sort_keys=False)
+
     # -- Métricas ----------------------------------------------------
     metrics = {
         "final_train_loss": train_losses[-1],
@@ -286,6 +305,13 @@ def main():
         "train_stats": {
             "X": {"min": x_min, "max": x_max, "mean": x_mean, "std": x_std},
             "Y": {"min": y_min, "max": y_max, "mean": y_mean, "std": y_std},
+        },
+           "evaluation_metrics": {
+            "MAE_original": float(mae_original),  # 
+            "MSE_original": float(mse_original),  # 
+            "RMSE_original": float(rmse_original),  # 
+            "MAPE_original": f"{float(mape_original):.6f}%",  #
+            "total_samples": len(val_loader.dataset)  # 
         },
     }
     with open(os.path.join(args.out_dir, "metrics.json"), "w") as f:
