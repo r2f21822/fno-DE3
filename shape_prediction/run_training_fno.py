@@ -265,7 +265,14 @@ def main():
         }   
     
     }
+        all_preds = []
+    all_targets = []
     
+    with torch.no_grad():
+        for xb, yb, _ in val_loader:
+            xb, yb = xb.to(device), yb.to(device)
+            all_preds.append(model(xb).cpu())
+            all_targets.append(yb.cpu())
     all_preds = torch.cat(all_preds, dim=0)
     all_targets = torch.cat(all_targets, dim=0)
     
