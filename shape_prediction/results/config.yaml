@@ -1,0 +1,12 @@
+model:
+  type: FNO_2D
+  n_modes: !!python/tuple
+  - 16
+  - 16
+  hidden_channels: 64
+training:
+  epochs: 100
+  batch_size: 16
+  learning_rate: 0.001
+data:
+  path: Generate_data/snl/snl_dataset.h5
