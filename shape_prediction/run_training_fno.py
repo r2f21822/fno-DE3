@@ -265,7 +265,7 @@ def main():
         }   
     
     }
-        all_preds = []
+    all_preds = []
     all_targets = []
     
     with torch.no_grad():
